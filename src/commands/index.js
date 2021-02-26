@@ -35,5 +35,13 @@ module.exports = bot => {
     }
   })
 
+  bot.on('channel_post', ctx => {
+    const text = ctx.update.channel_post.text;
+
+    if (text === '/start_service') {
+      ctx.reply(start_service.text);
+    }
+  })
+
   setupFeedActions(bot, initMarkup);
 }
