@@ -13,7 +13,6 @@ module.exports = bot => {
         reply_markup: {
           inline_keyboard: [
             [{ text: init_btn.help.text, callback_data: 'help'}],
-            [{ text: init_btn.add_bot.text, url: `http://t.me/${process.env.BOT_USERNAME}?startgroup=botstart`}],
             [{ text: init_btn.add_feed.text, callback_data: 'add_feed'}],
           ]
         }
