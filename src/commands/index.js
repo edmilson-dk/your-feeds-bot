@@ -1,8 +1,11 @@
-const { init_cmd } = require('../messages/commands.json');
+const { init_cmd, start_service } = require('../messages/commands.json');
 const { init_btn } = require('../messages/inline_keyboard.json');
-const { getChatId } = require('../helpers/command_help');
+const { 
+  getChatId,
+  isBotAdmin
+} = require('../helpers/bot_helpers');
 
-const actions = require('../actions/setup_feed_actions');
+const setupFeedActions = require('../actions/setup_feed_actions');
 
 const { setup_feed, help } = init_btn;
 
@@ -24,6 +27,13 @@ module.exports = bot => {
     }
   })
 
-  actions(bot, initMarkup);
-}
+  bot.command('start_service', async ctx => {
+    const { type } = await ctx.getChat();
+    
+    if (type !== 'private') {
+      ctx.reply(start_service.text);
+    }
+  })
 
+  setupFeedActions(bot, initMarkup);
+}
