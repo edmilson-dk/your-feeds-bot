@@ -1,6 +1,6 @@
 const { init_cmd } = require('../messages/commands.json');
 const { init_btn, go_back_btn } = require('../messages/inline_keyboard.json');
-const { getChatId } = require('../helpers/command_help');
+const { getChatId } = require('../helpers/bot_helpers');
 
 const { setup_feed, add_super_chat} = init_btn;
 
