@@ -1,7 +1,8 @@
 {
   "init_cmd": {
-    "type": "command",
-    "text": "Escolha a opção desejada abaixo😜",
-    "chat_type": "private"
+    "text": "Escolha a opção desejada abaixo😜"
+  },
+  "start_service": {
+    "text": "Pronto✅\n\nVolte ao meu menu, para configurar os feeds para este grupo."
   }
 }
