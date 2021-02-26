@@ -1,0 +1,19 @@
+{
+  "name": "your-feeds-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:fortrax-br/your-feeds-bot.git",
+  "author": "Fortrax",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "telegraf": "^4.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
