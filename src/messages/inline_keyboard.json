@@ -1,0 +1,13 @@
+{
+  "init_btn": {
+    "help": {
+      "text": "Ajuda"
+    },
+    "add_bot": {
+      "text": "Me adicione a seu grupo ou canal"
+    },
+    "add_feed": {
+      "text": "Configurar feeds"
+    }
+  }
+}

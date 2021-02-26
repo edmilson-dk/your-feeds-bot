@@ -1,0 +1,7 @@
+{
+  "init_cmd": {
+    "type": "command",
+    "text": "Clique na opção desejada, abaixo.",
+    "chat_type": "private"
+  }
+}
