@@ -1,5 +1,5 @@
-const { init_cmd, start_service } = require('../messages/commands.json');
-const { init_btn } = require('../messages/inline_keyboard.json');
+const { start_bot, start_service } = require('../messages/commands.json');
+const { start_bot_keyboard } = require('../messages/inline_keyboard.json');
 const { 
   getChatId,
   isBotAdmin
@@ -7,7 +7,7 @@ const {
 
 const setupFeedActions = require('../actions/setup_feed_actions');
 
-const { setup_feed, help } = init_btn;
+const { setup_feed, help } = start_bot_keyboard;
 
 module.exports = bot => {
   const initMarkup =  {
@@ -19,12 +19,12 @@ module.exports = bot => {
     },
   }
 
-  bot.command('init', async ctx => {
+  bot.start(async ctx => {
     const { type } = await ctx.getChat();
-
-    if (type === 'private') {
-      ctx.telegram.sendMessage(getChatId(ctx), init_cmd.text, initMarkup);   
-    }
+ 
+    type === 'private' 
+      ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, initMarkup)
+      : ctx.telegram.sendMessage(getChatId(ctx), 'Olá!');  
   })
 
   bot.command('start_service', async ctx => {
@@ -35,9 +35,10 @@ module.exports = bot => {
     }
   })
 
-  bot.on('channel_post', ctx => {
+  bot.on('channel_post', async ctx => {
+    const chat = await ctx.getChat();
     const text = ctx.update.channel_post.text;
-
+    
     if (text === '/start_service') {
       ctx.reply(start_service.text);
     }
