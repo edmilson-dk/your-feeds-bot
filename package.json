@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
+    "knex": "^0.21.18",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
     "telegraf": "^4.1.1"
   },
   "devDependencies": {

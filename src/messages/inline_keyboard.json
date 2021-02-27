@@ -1,24 +1,18 @@
 {
-  "init_btn": {
-    "type": "keyboard",
+  "start_bot_keyboard": {
     "help": {
-      "type": "keyboard",
       "text": "Ajuda"
     },
-    "setup_feed": {
-      "type": "keyboard",
-      "text": "⚙ Configurar feeds",
-      "action_text": "Para configurar os feeds, primeiro informe em qual tipo de chat, você deseja adicionar os serviços de feed.",
-      "action_super_chat": "➕ Adicionar o bot em um grupo",
-      "action_private_chat": "➕ No meu chat privado"
+    "manager_feed": {
+      "text": "⚙ Gerenciar seus feeds",
+      "action_text": "Seus grupos, canais e super-grupos que você adicinou meus serviços 💬",
+      "action_super_chat": "➕ Me adcione em seu grupo, canal ou super-grupo"
     }, 
     "add_super_chat": {
-      "type": "message",
       "text": "Para eu poder executar meus serviços de feed, em seu grupo ou canal, me adicione nele, e logo após me adicionar em seu grupo/canal, me dê permissão de admistrador🤖, feito isso você deve dentro do grupo ou canal, digitar o comando /start_service."
     }
   },
   "go_back_btn": {
-    "type": "keyboard",
     "text": "🔙 Voltar ao menu anterior"
   }
 }
