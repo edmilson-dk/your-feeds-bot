@@ -14,8 +14,18 @@ async function isBotAdmin(ctx){
   return result;
 }
 
+function getUserId(ctx, type) {
+  switch (type) {
+    case 'action':
+      return ctx.update.callback_query.from.id; 
+    case 'command':
+      return ctx.from.id;
+  }
+}
+
 module.exports = { 
   getChatId,
   isAdmin,
   isBotAdmin,
+  getUserId,
 };

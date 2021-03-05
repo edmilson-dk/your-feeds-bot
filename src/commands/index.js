@@ -2,17 +2,26 @@ const { start_bot, start_service } = require('../messages/commands.json');
 const { start_bot_keyboard } = require('../messages/inline_keyboard.json');
 
 const { getChatId, isBotAdmin, isAdmin } = require('../helpers/bot_helpers');
-const { add, drop, addSession, existsSession } = require('../drivers/database/in-memory-database');
+const User = require('../domain/User');
+const Feed = require('../domain/Feed');
+const Chat = require('../domain/Chat');
+const UserRepository = require('../infra/repositories/user_repository');
+const ChatRepository = require('../infra/repositories/chat_repository');
+const FeedRepository = require('../infra/repositories/feed_repository');
 
 const setupFeedActions = require('../actions/setup_feed_actions');
 
-const { manager_feed, help } = start_bot_keyboard;
+const { manager_feed, help, about } = start_bot_keyboard;
+
+const userRepository = new UserRepository();
+const chatRepository = new ChatRepository();
+const feedRepository = new FeedRepository();
 
 module.exports = bot => {
   const initMarkup =  {
     reply_markup: {
       inline_keyboard: [
-        [{ text: help.text, callback_data: 'help'}],
+        [{ text: help.text, callback_data: 'help'}, {text: about.text, callback_data: 'about' }],
         [{ text: manager_feed.text, callback_data: 'manager_feed'}],
       ],
     },
@@ -20,10 +29,10 @@ module.exports = bot => {
 
   bot.start(async ctx => {
     const { type } = await ctx.getChat();
-    const existsUserId = existsSession(ctx.message.from.id);
+    const user = new User(String(ctx.from.id), ctx.from.username);
     
-    if (!existsUserId) addSession(ctx.message.from.id);
- 
+    await userRepository.add(user.user_id, user.username);
+
     type === 'private' 
       ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, initMarkup)
       : ctx.telegram.sendMessage(getChatId(ctx), 'Olá!');  
@@ -31,17 +40,17 @@ module.exports = bot => {
 
   bot.command('start_service', async ctx => {
     const { type, id: chatID, title } = await ctx.getChat();
-    const userID = ctx.message.from.id;
+    const userID = ctx.from.id;
     const isUserAdmin = await isAdmin(userID, ctx);
-    const isUserValid = existsSession(userID);
-
+    const isUserValid = await userRepository.existsUser(String(userID));
+    
     if (type !== 'private') {
       if (!isUserValid) {
-        ctx.reply(start_service.not_bot_admin);
+        ctx.reply(start_service.invalid_user);
         return;
       }
       if (isUserValid && !(await isBotAdmin(ctx))) {
-        ctx.reply(start_service.invalid_user);
+        ctx.reply(start_service.not_bot_admin);
         return;
       }
       if (isUserValid && !isUserAdmin) {
@@ -49,7 +58,8 @@ module.exports = bot => {
         return;
       }
 
-      add(String(userID), title, String(chatID));
+      await chatRepository.addChat(String(chatID), title, '3.600', String(userID));
+      
       ctx.reply(start_service.success);  
     }
   })
@@ -73,5 +83,5 @@ module.exports = bot => {
     }
   })
 
-  setupFeedActions(bot, initMarkup);
+  setupFeedActions(bot, initMarkup, chatRepository);
 }
