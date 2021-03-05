@@ -1,6 +1,6 @@
-const { start_bot } = require('../messages/commands.json');
-const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard.json');
-const { getChatId, getUserId } = require('../helpers/bot_helpers');
+const { start_bot, home } = require('../messages/commands')
+const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard')
+const { getChatId, getUserId } = require('../helpers/bot_helpers')
 
 const { manager_feed, add_super_chat } = start_bot_keyboard;
 
@@ -8,7 +8,7 @@ module.exports = (bot, initMarkup, chatRepository) => {
   bot.action('start_bot', ctx => {
     ctx.answerCbQuery();
     ctx.deleteMessage();
-    ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, initMarkup);
+    ctx.telegram.sendMessage(getChatId(ctx), home.text, initMarkup);
   }) 
 
   bot.action('manager_feed', async ctx => {
