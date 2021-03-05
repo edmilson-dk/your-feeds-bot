@@ -23,9 +23,9 @@ function getUserId(ctx, type) {
   }
 }
 
-module.exports = { 
-  getChatId,
+module.exports = {
   isAdmin,
   isBotAdmin,
-  getUserId,
+  getChatId,
+  getUserId
 };
