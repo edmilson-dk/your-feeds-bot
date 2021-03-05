@@ -13,9 +13,16 @@ class UserRepository {
     return;
   }
 
+  async dropUser(user_id) {
+    await knex('user')
+      .where({ id: user_id })
+      .del();
+
+    return;
+  }
+
   async existsUser(user_id) {
     const exists = await knex('user')
-      .select()
       .where({ id: user_id });
 
     return exists.length > 0 ? true : false;

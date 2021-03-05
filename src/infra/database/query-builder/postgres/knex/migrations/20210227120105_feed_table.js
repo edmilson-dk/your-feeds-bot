@@ -2,12 +2,14 @@ exports.up = function(knex) {
   knex.schema.hasTable('feed').then(exists => {
     if (!exists) {
       return knex.schema.createTable('feed', table => {
-        table.string('rss_url').notNullAble();
-        
+        table.string('rss_url').notNullable();
+        table.string('hashtag', 60).notNullable();
+        table.string('title', 60).notNullable();
+
         // relation to chat table
         table.string('chat_id', 60)
           .references('chat.id')
-          .notNullAble()
+          .notNullable()
           .onDelete('CASCADE');
         
         table.timestamp('created_at').defaultTo(knex.fn.now());
