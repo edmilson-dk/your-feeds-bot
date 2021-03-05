@@ -5,6 +5,9 @@ exports.up = function(knex) {
         table.string('id', 60).notNullable().unique();
         table.string('title', 100).notNullable();
         table.string('interval_post', 60).notNullable();
+        table.string('start_posts', 20).notNullable();
+        table.string('end_posts', 20).notNullable();
+        table.string('next_posts_time').notNullable();
 
         // relation to user table
         table.string('user_id')
