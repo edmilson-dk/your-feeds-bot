@@ -18,6 +18,18 @@ class Chat {
 
     Object.freeze(this);
   }
+
+  getValues() {
+    return {
+      id: this.id,
+      title: this.title,
+      user_id: this.user_id,
+      interval_post: this.interval_post,
+      start_posts: this.start_posts,
+      end_posts: this.end_posts,
+      next_posts_time: this.next_posts_time
+    }
+  }
 }
 
 module.exports = Chat;
