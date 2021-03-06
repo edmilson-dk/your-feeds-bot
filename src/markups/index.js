@@ -1,19 +1,25 @@
 const { start_bot_keyboard } = require('../messages/inline_keyboard');
 
-const { manager_feed, help, about } = start_bot_keyboard;
+const { manager_feeds, help, about } = start_bot_keyboard;
 
-export const homeMarkup =  {
+const homeMarkup =  {
   reply_markup: {
     inline_keyboard: [
       [{ text: help.text, callback_data: 'help'}, {text: about.text, callback_data: 'about' }],
-      [{ text: manager_feed.text, callback_data: 'manager_feed'}],
+      [{ text: manager_feeds.text, callback_data: 'manager_feeds'}],
     ],
   },
 }
-export const timezonesMarkup = {
+
+const timezonesMarkup = {
   reply_markup: {
     inline_keyboard: [
-      [{ text: 'Ver tabela de timezones', url: "https://pt.wikipedia.org/wiki/Lista_de_fusos_hor%C3%A1rios"}]
+      [{ text: 'Ver tabela de fusos horários', url: "https://fusohorariomundial.com.br/tabela"}]
     ]
   }
+}
+
+module.exports = {
+  homeMarkup,
+  timezonesMarkup,
 }
