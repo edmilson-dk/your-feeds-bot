@@ -1,6 +1,7 @@
 const { start_bot, start_service, home, cmd_error} = require('../messages/commands');
 const { homeMarkup, timezonesMarkup } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin } = require('../helpers/bot_helpers');
+const { asyncFilter } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
 const Feed = require('../domain/Feed');
@@ -24,6 +25,8 @@ module.exports = bot => {
     type === 'private'
       ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, timezonesMarkup)
       : ctx.telegram.sendMessage(getChatId(ctx), 'Olá!');  
+
+    return;
   })
 
   bot.command('register', async ctx => {
@@ -38,6 +41,8 @@ module.exports = bot => {
     await userRepository.add(user.user_id, user.username, user.timezone);
     
     ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
+
+    return;
   })
 
  bot.command('start_service', async ctx => {
@@ -61,42 +66,53 @@ module.exports = bot => {
         return;
       }
       if ((await chatRepository.existsChat(chatID))) {
-        ctx.reply('Este chat já está registrado em meu sistema!');
+        ctx.reply(start_service.chat_alredy_exists);
         return;
       } 
 
-      await chatRepository.addChat(
-        chat.id,
-        chat.title,
-        chat.user_id,
-        chat.interval_post,
-        chat.start_posts,
-        chat.end_posts,
-        chat.next_posts_time
-      );
-      console.log(await chatRepository.getOneChatOfUser(userID, chatID));
+      await chatRepository.addChat(chat.getValues());
       ctx.reply(start_service.success);  
+
+      return;
     }
+
+    return;
   })
 
   bot.on('channel_post', async ctx => {
     const text = ctx.update.channel_post.text;
     const admins = await ctx.getChatAdministrators(ctx.update.channel_post.chat.id);
-    const userActiveSessionId = admins.filter(item => existsSession(item.user.id));
-    
+    const notMemberBot = admins.filter(item => !item.user.is_bot);
+
+    const userActiveSessionId = await asyncFilter(notMemberBot, async item => {
+      const exists = await userRepository.existsUser(String(item.user.id));
+      return exists;
+    });
+
     const userID = userActiveSessionId.length > 0 
       ? userActiveSessionId[0].user.id
       : undefined;
       
     const { id: chatID, title } = await ctx.getChat();
-    if (userID) add(String(userID), title, String(chatID));
+    let chat = null;
+    
+    if (userID) chat = new Chat(chatID, title, userID);
 
     if (text === '/start_service') {
-      if ((await isBotAdmin(ctx))) {
-        ctx.reply(start_service.success);
+      if ((await isBotAdmin(ctx)) && chat) {
+        await chatRepository.addChat(chat.getValues());
+        ctx.reply(start_service.success);  
+
+        return;
       }
+      if ((await chatRepository.existsChat(chatID))) {
+        ctx.reply(start_service.chat_alredy_exists);
+        return;
+      } 
     }
+
+    return;
   })
 
-  setupFeedActions(bot, chatRepository);
+  setupFeedActions({bot, chatRepository});
 }
