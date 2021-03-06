@@ -1,6 +1,6 @@
 {
   "start_bot": {
-    "text": "⚠️ Importante para utilizar nossos serviços de feed, precisamos que você informe qual é seu fuso horário de sua região 🕝 para os feeds serem postados no horário correto, de onde você vive.\n\nPara isso, basta enviar o comando /register, com o fuso horário logo após o comando, exemplo:\n\n/register +3"
+    "text": "⚠️ Importante para utilizar nossos serviços de feed, precisamos que você informe qual é seu fuso horário de sua região em relação ao fuso horário universal UTC 🕝 para os feeds serem postados no horário correto, de onde você vive.\n\nPara isso, basta enviar o comando /register, com o fuso horário logo após o comando, exemplo:\n\n/register +3"
   },
   "home": {
     "text": "Escolha uma opção abaixo ✅"
@@ -10,6 +10,7 @@
   },
   "start_service": {
     "invalid_user": "Úsuario inválido ❌",
+    "chat_alredy_exists": "Este chat já está registrado em meu sistema ⚠️",
     "not_bot_admin": "Preciso ter poderes administrativos, para executar este comando ⚠️",
     "not_admin": "Você precisa ser admistrador do grupo, para executar este comando ⚠️",
     "success": "Pronto bot conectado✅\n\nVolte ao meu menu, para configurar os feeds para este grupo."
