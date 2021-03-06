@@ -2,16 +2,19 @@ class Chat {
   constructor(
     id, 
     title, 
-    interval_post, 
-    start_posts, 
-    end_posts, 
-    next_posts_time, 
-    user_id
+    user_id,
+    interval_post = "1", 
+    start_posts = "8:00", 
+    end_posts = "00:00", 
+    next_posts_time = "9:00", 
     ) {
-    this.id = id;
+    this.id = String(id);
     this.title = title;
+    this.user_id = String(user_id);
     this.interval_post = interval_post;
-    this.user_id = user_id;
+    this.start_posts = start_posts;
+    this.end_posts = end_posts;
+    this.next_posts_time = next_posts_time;
 
     Object.freeze(this);
   }
