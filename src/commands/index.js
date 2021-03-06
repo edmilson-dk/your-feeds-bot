@@ -22,7 +22,7 @@ module.exports = bot => {
     const { type } = await ctx.getChat();
 
     type === 'private'
-      ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text)
+      ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, timezonesMarkup)
       : ctx.telegram.sendMessage(getChatId(ctx), 'Olá!');  
   })
 
@@ -40,11 +40,12 @@ module.exports = bot => {
     ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
   })
 
- /* bot.command('start_service', async ctx => {
+ bot.command('start_service', async ctx => {
     const { type, id: chatID, title } = await ctx.getChat();
     const userID = ctx.from.id;
     const isUserAdmin = await isAdmin(userID, ctx);
     const isUserValid = await userRepository.existsUser(String(userID));
+    const chat = new Chat(chatID, title, userID);
     
     if (type !== 'private') {
       if (!isUserValid) {
@@ -59,9 +60,21 @@ module.exports = bot => {
         ctx.reply(start_service.not_admin);
         return;
       }
+      if ((await chatRepository.existsChat(chatID))) {
+        ctx.reply('Este chat já está registrado em meu sistema!');
+        return;
+      } 
 
-      await chatRepository.addChat(String(chatID), title, '3.600', String(userID));
-      
+      await chatRepository.addChat(
+        chat.id,
+        chat.title,
+        chat.user_id,
+        chat.interval_post,
+        chat.start_posts,
+        chat.end_posts,
+        chat.next_posts_time
+      );
+      console.log(await chatRepository.getOneChatOfUser(userID, chatID));
       ctx.reply(start_service.success);  
     }
   })
@@ -84,6 +97,6 @@ module.exports = bot => {
       }
     }
   })
-*/
-  setupFeedActions(bot, initMarkup, chatRepository);
+
+  setupFeedActions(bot, chatRepository);
 }
