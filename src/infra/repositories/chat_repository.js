@@ -1,13 +1,24 @@
 const knex = require('../database/query-builder/postgres/knex');
 
 class ChatRepository {
-  async addChat(id, title, interval_post, user_id) {
+  async addChat(
+    id, 
+    title, 
+    user_id, 
+    interval_post, 
+    start_posts, 
+    end_posts, 
+    next_posts_time
+    ) {
     await knex('chat')
       .insert({
         id,
         title,
-        interval_post,
         user_id,
+        interval_post,
+        start_posts,
+        end_posts,
+        next_posts_time
       });
 
     return;
@@ -30,7 +41,15 @@ class ChatRepository {
     return row;
   }
 
-  async dropChat(chat_id) {
+  async existsChat(chat_id) {
+    const exists = await knex('chat')
+    .where({ id: chat_id });
+
+    return exists.length > 0 ? true : false;
+
+  }
+
+  async dropChat(user_id, chat_id) {
     await knex('chat')
       .where({ id: chat_id })
       .del();
