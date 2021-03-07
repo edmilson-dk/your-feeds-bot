@@ -3,7 +3,7 @@ exports.up = function(knex) {
     if (!exists) {
       return knex.schema.createTable('feed', table => {
         table.string('rss_url').notNullable();
-        table.string('hashtag', 60).notNullable();
+        table.string('hashtag').notNullable();
         table.string('title', 60).notNullable();
 
         // relation to chat table
