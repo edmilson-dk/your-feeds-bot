@@ -7,7 +7,7 @@ const  { go_back_btn } = require('../messages/inline_keyboard');
 
 const { homeMarkup, timezonesMarkup, isNotMemberOrAdmin } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin } = require('../helpers/bot_helpers');
-const { asyncFilter, isHashtagsValid, removeSpacesInArray } = require('../helpers/features_helpers');
+const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, getChatTitleInCommand } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
 const Feed = require('../domain/Feed');
@@ -30,10 +30,15 @@ module.exports = bot => {
 
   bot.start(async ctx => {
     const { type } = await ctx.getChat();
+    const userID = String(ctx.from.id);
 
-    type === 'private'
-      ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, timezonesMarkup)
-      : ctx.telegram.sendMessage(getChatId(ctx), 'Olá!');  
+    if (type === 'private') {
+      !(await userRepository.existsUser(userID))
+        ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, timezonesMarkup)
+        : ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
+    } else {
+      ctx.telegram.sendMessage(getChatId(ctx), 'Olá!'); 
+    }
 
     return;
   })
@@ -125,22 +130,26 @@ module.exports = bot => {
 
   bot.command('view_chat', async ctx => {
     const chatTitle = ctx.message.text.replace('/view_chat', '').trim();
-    const userChatID = ctx.chat.id;
    
-    const userID = ctx.message.from.id;
-    const { id } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
-    
-    if ((await isStillMemberAndAdmin(id, userID, { bot }))) {
-      const feeds = await feedRepository.getFeeds(id);
+    if (!chatTitle) {
+      ctx.reply(cmd_error.text);
+      return;
+    }
 
+    const userID = ctx.message.from.id;
+    const { id: chatID, title } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
+    
+    if ((await isStillMemberAndAdmin(chatID, userID, { bot }))) {
+      const feeds = await feedRepository.getFeeds(chatID);
+      
       let feedsList = '<strong>Feeds ✅</strong>\n';
       if (feeds && feeds.length > 0) {
-        feedsKeyBoard.forEach((feed, index) => {
-          feedsList += `\n${index} -  <i>${feed.title}</i>\n`
+        feeds.forEach((feed, index) => {
+          feedsList += `\n${index} - <i>${feed.title}</i>\n`
         })
       } 
 
-      ctx.telegram.sendMessage(getChatId(ctx), `${view_chat.text}\n\n${feedsList}`, {
+      ctx.telegram.sendMessage(getChatId(ctx), `${view_chat.text}<strong>${title}</strong>\n\n${feedsList}`, {
         reply_markup: {
           inline_keyboard: [
             [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
@@ -149,40 +158,46 @@ module.exports = bot => {
         parse_mode: 'HTML'
       })
 
-      return;
+      bot.command('add', async ctx => await commandAddFeed(ctx, chatID));
+
     } else {
-      ctx.telegram.sendMessage(userChatID, not_member_admin.text, isNotMemberOrAdmin);
-      await chatRepository.dropChat(userID, id);
+      ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdmin);
+      await chatRepository.dropChat(userID, chatID);
 
       return;
     }
   })
 
-  bot.command('add', async ctx => {
+  async function commandAddFeed(ctx, chat_id) {
     let data = ctx.message.text.replace('/add', '').trim().split(' ');
     data = removeSpacesInArray(data);
-    
-    const rss_url = data[0];
-    
-    const hashtags = data.slice(1);
-    const result = isHashtagsValid(hashtags);
-    
 
-    if (!result) {
+    const rssURL = data.slice(0, 1).toString();
+    const hashtags = removeNotHashtagsInArray(data);
+
+    if (!isHashtagsValid(hashtags)) {
       ctx.telegram.sendMessage(getChatId(ctx), add_feed.cmd_error, { parse_mode: 'HTML'});
       return;
     } 
     
-    if ((await rssParser.rssIsValid(rss_url))) {
-      const title = await rssParser.getFeedTitle(rss_url);
-      ctx.reply('Feed cadastrado com sucesso');
+    if ((await rssParser.rssIsValid(rssURL))) {
+      const title = await rssParser.getFeedTitle(rssURL);
+      const hashtags_formatted = hashtags.join(' ');
+      
+      await feedRepository.addFeed({ 
+        rss_url: rssURL,
+        hashtag: hashtags_formatted,
+        title,
+        chat_id
+      });
+
+      ctx.reply(add_feed.success);
       return;
     } else {
-      ctx.reply('Por favor escolha outro serviço de feed, este não está em perfeitas condições');
+      ctx.reply(add_feed.invalid_rss);
       return;
     }
-
-  })
+  }
 
   setupFeedActions({bot});
 }
