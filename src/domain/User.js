@@ -6,6 +6,14 @@ class User {
 
     Object.freeze(this);
   }
+
+  getValue() {
+    return {
+      user_id: this.user_id,
+      username: this.username,
+      timezone: this.timezone,
+    }
+  }
 }
 
 module.exports = User;
