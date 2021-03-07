@@ -2,10 +2,13 @@ const { home } = require('../messages/commands')
 const { start_bot_keyboard, go_back_btn, clicked_chat } = require('../messages/inline_keyboard')
 const { getChatId, getUserId } = require('../helpers/bot_helpers')
 const { homeMarkup } = require('../markups');
+const ChatRepository = require('../infra/repositories/chat_repository');
 
 const { manager_feeds, add_super_chat } = start_bot_keyboard;
 
-module.exports = ({bot, chatRepository}) => {
+const chatRepository = new ChatRepository();
+
+module.exports = ({ bot }) => {
   bot.action('start_bot', ctx => {
     ctx.answerCbQuery();
     ctx.deleteMessage();
@@ -22,32 +25,22 @@ module.exports = ({bot, chatRepository}) => {
     const defaultMarkup = [
       [{ text: manager_feeds.action_update_list, callback_data: 'manager_feeds'},
       { text: manager_feeds.action_super_chat, callback_data: 'action_super_chat'}],
-      [{ text: go_back_btn.text, callback_data: 'start_bot' }]
+      [{ text: go_back_btn.text, callback_data: 'start_bot' }],
     ]
 
-    const chatsKeyBoard = [];
-
+    let chatsList = '<strong>Chats ✅</strong>\n';
     if (chats && chats.length > 0) {
-      chats.forEach(chat => {
-        chatsKeyBoard.push(
-          [{ text: `✅ ${chat.title}`, callback_data: 'clicked_in_chat'}]
-        );
+      chats.forEach((chat, index) => {
+        chatsList += `\n${index} - <i>${chat.title}</i>\n`;
       })
     }
-
-    chatsKeyBoard.push(...defaultMarkup);
-
-    ctx.telegram.sendMessage(getChatId(ctx), manager_feeds.action_text, {
+   
+    ctx.telegram.sendMessage(getChatId(ctx), `${manager_feeds.action_text}\n\n${chatsList}`, {
       reply_markup: {
-        inline_keyboard: chatsKeyBoard, 
-      }
+        inline_keyboard: defaultMarkup, 
+      },
+      parse_mode: 'HTML'
     })
-  })
-
-  bot.action('clicked_in_chat', ctx => {
-    ctx.answerCbQuery(
-      clicked_chat.text,
-      ctx.update.callback_query.id);
   })
 
   bot.action('action_super_chat', ctx => {
