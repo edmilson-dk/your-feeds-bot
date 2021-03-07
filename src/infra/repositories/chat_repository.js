@@ -44,7 +44,7 @@ class ChatRepository {
     const row = await knex('chat')
       .where({ title: chat_title, user_id })
 
-    return row;
+    return row[0];
   }
 
   async existsChat(chat_id) {
