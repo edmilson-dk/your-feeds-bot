@@ -1,6 +1,7 @@
-const { start_bot, start_service, home, cmd_error} = require('../messages/commands');
-const { homeMarkup, timezonesMarkup } = require('../markups');
-const { getChatId, isBotAdmin, isAdmin } = require('../helpers/bot_helpers');
+const { start_bot, start_service, home, cmd_error, not_member_admin, } = require('../messages/commands');
+const  { go_back_btn } = require('../messages/inline_keyboard');
+const { homeMarkup, timezonesMarkup, isNotMemberOrAdmin } = require('../markups');
+const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin } = require('../helpers/bot_helpers');
 const { asyncFilter } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
@@ -38,7 +39,7 @@ module.exports = bot => {
     }
 
     const user = new User(ctx.from.id, ctx.from.username, timezone);
-    await userRepository.add(user.user_id, user.username, user.timezone);
+    await userRepository.add(user.getValue());
     
     ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
 
@@ -112,6 +113,48 @@ module.exports = bot => {
     }
 
     return;
+  })
+
+  bot.command('view_chat', async ctx => {
+    const chatTitle = ctx.message.text.replace('/view_chat', '').trim();
+    const userChatID = ctx.chat.id;
+   
+    const userID = ctx.message.from.id;
+    const { id } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
+    
+    if ((await isStillMemberAndAdmin(id, userID, { bot }))) {
+      const feeds = await feedRepository.getFeeds(id);
+
+      const defaultMarkup = [
+        [{ text: 'Adicionar novo feed', callback_data: 'add_new_feed' }],
+        [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
+      ]
+
+      const feedsKeyBoard = [];
+      
+      if (feeds && feeds.length > 0) {
+        feedsKeyBoard.forEach(feed => {
+          feedsKeyBoard.push(
+            [{ text: `${feed.title}`, callback_data:  'clicked_in_feed'}],
+          )
+        })
+      } 
+           
+      feedsKeyBoard.push(...defaultMarkup);
+
+      ctx.telegram.sendMessage(getChatId(ctx), 'Gerencie os feeds para este chat.', {
+        reply_markup: {
+          inline_keyboard: feedsKeyBoard, 
+        }
+      })
+
+      return;
+    } else {
+      ctx.telegram.sendMessage(userChatID, not_member_admin.text, isNotMemberOrAdmin);
+      await chatRepository.dropChat(userID, id);
+
+      return;
+    }
   })
 
   setupFeedActions({bot, chatRepository});
