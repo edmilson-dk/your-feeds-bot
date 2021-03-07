@@ -12,6 +12,7 @@ class RssParser {
       await parser.parseURL(rss_url);
       return true;
     } catch (err) {
+      console.log(err)
       return false;
     }
   }
