@@ -1,7 +1,7 @@
-const { start_bot, home } = require('../messages/commands')
+const { home } = require('../messages/commands')
 const { start_bot_keyboard, go_back_btn, clicked_chat } = require('../messages/inline_keyboard')
 const { getChatId, getUserId } = require('../helpers/bot_helpers')
-const { homeMarkup, timezonesMarkup } = require('../markups');
+const { homeMarkup } = require('../markups');
 
 const { manager_feeds, add_super_chat } = start_bot_keyboard;
 
@@ -27,15 +27,15 @@ module.exports = ({bot, chatRepository}) => {
 
     const chatsKeyBoard = [];
 
-    if (chats.length > 0) {
+    if (chats && chats.length > 0) {
       chats.forEach(chat => {
-        chatsKeyBoard.push([
-          { text: chat.title, callback_data: 'clicked_in_chat'}
-        ]);
+        chatsKeyBoard.push(
+          [{ text: `✅ ${chat.title}`, callback_data: 'clicked_in_chat'}]
+        );
       })
     }
 
-    defaultMarkup.forEach(markup => chatsKeyBoard.push(markup));
+    chatsKeyBoard.push(...defaultMarkup);
 
     ctx.telegram.sendMessage(getChatId(ctx), manager_feeds.action_text, {
       reply_markup: {
