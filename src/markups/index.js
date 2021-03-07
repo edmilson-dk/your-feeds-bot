@@ -9,6 +9,7 @@ const homeMarkup =  {
       [{ text: manager_feeds.text, callback_data: 'manager_feeds'}],
     ],
   },
+  parse_mode: 'HTML'
 }
 
 const timezonesMarkup = {
@@ -16,7 +17,8 @@ const timezonesMarkup = {
     inline_keyboard: [
       [{ text: 'Ver tabela de fusos horários', url: "https://fusohorariomundial.com.br/tabela"}]
     ]
-  }
+  },
+  parse_mode: 'HTML'
 }
 
 const isNotMemberOrAdmin = {
@@ -24,7 +26,8 @@ const isNotMemberOrAdmin = {
     inline_keyboard: [
       [{ text: go_back_btn.text, callback_data: 'start_bot'}]
     ]
-  }
+  },
+  parse_mode: 'HTML'
 }
 
 module.exports = {
