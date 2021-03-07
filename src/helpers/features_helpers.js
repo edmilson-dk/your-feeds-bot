@@ -18,7 +18,13 @@ function removeSpacesInArray(array) {
   if (array.length === 0) return;
 
   const newArray = array.filter(item => item !== '');
+  return newArray;
+}
 
+function removeNotHashtagsInArray(array) {
+  if (array.length === 0) return;
+
+  const newArray = array.filter(item => item[0] === '#');
   return newArray;
 }
 
@@ -26,4 +32,5 @@ module.exports = {
   asyncFilter,
   isHashtagsValid,
   removeSpacesInArray,
+  removeNotHashtagsInArray,
 }
