@@ -1,7 +1,7 @@
 const knex = require('../database/query-builder/postgres/knex');
 
 class UserRepository {
-  async add(user_id, username, timezone) {
+  async add({ user_id, username, timezone }) {
     if ((await this.existsUser(user_id))) return;
     
     await knex('user')
