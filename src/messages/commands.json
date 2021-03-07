@@ -14,5 +14,8 @@
     "not_bot_admin": "Preciso ter poderes administrativos, para executar este comando ⚠️",
     "not_admin": "Você precisa ser admistrador do grupo, para executar este comando ⚠️",
     "success": "Pronto bot conectado✅\n\nVolte ao meu menu, para configurar os feeds para este grupo."
+  },
+  "not_member_admin": {
+    "text": "Você não é mais administrador ou membro deste chat ❌"
   }
 }
