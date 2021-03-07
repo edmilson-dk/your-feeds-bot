@@ -1,12 +1,19 @@
-const { start_bot, start_service, home, cmd_error, not_member_admin, } = require('../messages/commands');
+const { 
+  start_bot, start_service, 
+  home, cmd_error, not_member_admin, 
+  view_chat, add_feed 
+} = require('../messages/commands');
 const  { go_back_btn } = require('../messages/inline_keyboard');
+
 const { homeMarkup, timezonesMarkup, isNotMemberOrAdmin } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin } = require('../helpers/bot_helpers');
-const { asyncFilter } = require('../helpers/features_helpers');
+const { asyncFilter, isHashtagsValid, removeSpacesInArray } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
 const Feed = require('../domain/Feed');
 const Chat = require('../domain/Chat');
+
+const RssParser = require('../drivers/rss-parser');
 
 const UserRepository = require('../infra/repositories/user_repository');
 const ChatRepository = require('../infra/repositories/chat_repository');
@@ -17,6 +24,7 @@ const setupFeedActions = require('../actions/setup_feed_actions');
 const userRepository = new UserRepository();
 const chatRepository = new ChatRepository();
 const feedRepository = new FeedRepository();
+const rssParser = new RssParser();
 
 module.exports = bot => {
 
@@ -125,27 +133,20 @@ module.exports = bot => {
     if ((await isStillMemberAndAdmin(id, userID, { bot }))) {
       const feeds = await feedRepository.getFeeds(id);
 
-      const defaultMarkup = [
-        [{ text: 'Adicionar novo feed', callback_data: 'add_new_feed' }],
-        [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
-      ]
-
-      const feedsKeyBoard = [];
-      
+      let feedsList = '<strong>Feeds ✅</strong>\n';
       if (feeds && feeds.length > 0) {
-        feedsKeyBoard.forEach(feed => {
-          feedsKeyBoard.push(
-            [{ text: `${feed.title}`, callback_data:  'clicked_in_feed'}],
-          )
+        feedsKeyBoard.forEach((feed, index) => {
+          feedsList += `\n${index} -  <i>${feed.title}</i>\n`
         })
       } 
-           
-      feedsKeyBoard.push(...defaultMarkup);
 
-      ctx.telegram.sendMessage(getChatId(ctx), 'Gerencie os feeds para este chat.', {
+      ctx.telegram.sendMessage(getChatId(ctx), `${view_chat.text}\n\n${feedsList}`, {
         reply_markup: {
-          inline_keyboard: feedsKeyBoard, 
-        }
+          inline_keyboard: [
+            [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
+          ]
+        },
+        parse_mode: 'HTML'
       })
 
       return;
@@ -157,5 +158,31 @@ module.exports = bot => {
     }
   })
 
-  setupFeedActions({bot, chatRepository});
+  bot.command('add', async ctx => {
+    let data = ctx.message.text.replace('/add', '').trim().split(' ');
+    data = removeSpacesInArray(data);
+    
+    const rss_url = data[0];
+    
+    const hashtags = data.slice(1);
+    const result = isHashtagsValid(hashtags);
+    
+
+    if (!result) {
+      ctx.telegram.sendMessage(getChatId(ctx), add_feed.cmd_error, { parse_mode: 'HTML'});
+      return;
+    } 
+    
+    if ((await rssParser.rssIsValid(rss_url))) {
+      const title = await rssParser.getFeedTitle(rss_url);
+      ctx.reply('Feed cadastrado com sucesso');
+      return;
+    } else {
+      ctx.reply('Por favor escolha outro serviço de feed, este não está em perfeitas condições');
+      return;
+    }
+
+  })
+
+  setupFeedActions({bot});
 }
