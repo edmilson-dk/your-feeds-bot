@@ -1,4 +1,4 @@
-const { start_bot_keyboard } = require('../messages/inline_keyboard');
+const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard');
 
 const { manager_feeds, help, about } = start_bot_keyboard;
 
@@ -19,7 +19,16 @@ const timezonesMarkup = {
   }
 }
 
+const isNotMemberOrAdmin = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: go_back_btn.text, callback_data: 'start_bot'}]
+    ]
+  }
+}
+
 module.exports = {
   homeMarkup,
   timezonesMarkup,
+  isNotMemberOrAdmin
 }
