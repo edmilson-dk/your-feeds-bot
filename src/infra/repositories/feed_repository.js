@@ -17,7 +17,9 @@ class FeedRepository {
     const rows = knex('feed')
       .where({ chat_id })
       .join('chat', 'chat.id', '=', 'feed.chat_id')
-      .select('feed.*', 'chat.ttile')
+      .select('feed.*')
+
+    return rows;
   }
 
   async titleAlredyExists(title, chat_id) {
