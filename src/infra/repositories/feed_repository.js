@@ -3,12 +3,12 @@ const knex = require('../database/query-builder/postgres/knex');
 class FeedRepository {
   async addFeed({ rss_url, hashtag, title, chat_id }) {
     await knex('feed')
-    .insert({
-      rss_url,
-      hashtag,
-      title,
-      chat_id,
-    })
+      .insert({
+        rss_url,
+        hashtag,
+        title,
+        chat_id,
+      })
 
     return;
   }
@@ -18,6 +18,13 @@ class FeedRepository {
       .where({ chat_id })
       .join('chat', 'chat.id', '=', 'feed.chat_id')
       .select('feed.*', 'chat.ttile')
+  }
+
+  async titleAlredyExists(title, chat_id) {
+    const exists = await knex('feed')
+      .where({ ctitle, chat_id })
+
+    return exists.length > 0 ? true : false;
   }
 }
 
