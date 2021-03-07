@@ -19,9 +19,11 @@
     "text": "Você não é mais administrador ou membro deste chat ❌"
   },
   "view_chat": {
-    "text": "Gerencie os feeds para este chat.\n\n<strong>Comandos ✅</strong>\n\n/add <i>rss_url #hashtags</i>\n\n/remove <i>titúlo</i>\n\n/update_title <i>titúlo_antigo novo_titúlo</i>\n\n/update_hashtags <i>titúlo #hashtags_antigas #novas_hashtags</i>"
+    "text": "Gerencie os feeds para o chat: \n\n<strong>Comandos para gerencias os feeds✅</strong>\n\n/add <i>rss_url #hashtags</i>\n\n<code>Use este comando para cadastrar um novo feed a seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>Use este comando para remover um feed de seu chat.</code>\n\n/update_title <i>titúlo_antigo novo_titúlo</i>\n\n<code>Use este comando para atualizar o titúlo de algum feed cadastrado a seu chat.</code>\n\n/update_hashtags <i>titúlo #hashtags_antigas #novas_hashtags</i>\n\n<code>Use este comando para atualizar alguma hashtag relacionada a algum feed cadstrado a seu chat.</code>"
   },
   "add_feed": {
-    "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /add deve possuir a seguinte estrutura:\n\n/add <i>rss_url #hashtags</i>.'" 
+    "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /add deve possuir a seguinte estrutura:\n\n/add <i>rss_url #hashtags</i>.",
+    "invalid_rss": "Por favor escolha outro serviço de feed, este não está em perfeitas condições ⚠️",
+    "success": "Feed cadastrado com sucesso ✅"
   }
 }
