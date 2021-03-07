@@ -22,11 +22,12 @@ class FeedRepository {
     return rows;
   }
 
-  async titleAlredyExists(title, chat_id) {
-    const exists = await knex('feed')
-      .where({ ctitle, chat_id })
+  async dropFeed(feed_title, chat_id) {
+    await knex('feed')
+      .where({ title: feed_title, chat_id })
+      .del();
 
-    return exists.length > 0 ? true : false;
+    return;
   }
 }
 
