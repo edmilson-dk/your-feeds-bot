@@ -29,6 +29,13 @@ class FeedRepository {
 
     return;
   }
+
+  async existsFeedByTitle(title, chat_id) {
+    const exists = await knex('feed')
+      .where({ title, chat_id })
+
+    return exists.length > 0 ? true : false;
+  }
 }
 
 module.exports = FeedRepository;
