@@ -34,10 +34,16 @@ function getUserId(ctx, type) {
   }
 }
 
+function removeCommand(message, cmd) {
+  const newMessage = message.replace(cmd, '').trim();
+  return newMessage;
+}
+
 module.exports = {
   isAdmin,
   isBotAdmin,
   getChatId,
   getUserId,
   isStillMemberAndAdmin,
+  removeCommand
 };
