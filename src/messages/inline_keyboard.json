@@ -7,8 +7,8 @@
       "text": "Sobre"
     },
     "manager_feeds": {
-      "text": "⚙ Gerenciar seus feeds",
-      "action_text": "Seus grupos, canais e super-grupos que você adicinou meus serviços 💬\n\nPara configurar os feeds registrados em algum chat listado abaixo, envie o comando /view_chat com o nome do chat desejado, o nome deve ser o mesmo de algum destes chats listados abaixo.\n\nPor exemplo: /view_chat grupo_um.",
+      "text": "⚙ Gerenciar seus chats",
+      "action_text": "Seus grupos, canais e super-grupos que você adicinou meus serviços 💬\n\nPara configurar os feeds registrados em algum chat listado abaixo, envie o comando /view_chat com o nome do chat desejado, o nome deve ser o mesmo de algum destes chats listados abaixo.\n\nPor exemplo: /view_chat <i>grupo_um</i>, com isso você poderá gerenciar os feeds cadastrados em algum chat escolhido.",
       "action_super_chat": "➕ Adicionar novo grupo",
       "action_update_list": "🌀 Atualizar lista"
     }, 

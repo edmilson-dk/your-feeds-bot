@@ -7,6 +7,17 @@ async function isAdmin(memberId, ctx) {
   return result;
 }
 
+async function isStillMemberAndAdmin(chatId, memberId, { bot }) {
+  try {
+    const { status } = await bot.telegram.getChatMember(chatId, memberId);
+    const result = status === 'creator' || status === 'administrator';
+
+    return result;
+  } catch (err) {
+    return false;
+  }
+}
+
 async function isBotAdmin(ctx){
   const botId = ctx.botInfo.id;
   const result = await isAdmin(botId, ctx);
@@ -27,5 +38,6 @@ module.exports = {
   isAdmin,
   isBotAdmin,
   getChatId,
-  getUserId
+  getUserId,
+  isStillMemberAndAdmin,
 };

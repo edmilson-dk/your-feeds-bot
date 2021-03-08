@@ -3,7 +3,7 @@
     "text": "⚠️ Importante para utilizar nossos serviços de feed, precisamos que você informe qual é seu fuso horário de sua região em relação ao fuso horário universal UTC 🕝 para os feeds serem postados no horário correto, de onde você vive.\n\nPara isso, basta enviar o comando /register, com o fuso horário logo após o comando, exemplo:\n\n/register +3"
   },
   "home": {
-    "text": "Escolha uma opção abaixo ✅"
+    "text": "Nosso sistema funciona através de serviços de feed RSS, se vocề não souber como funciona, fique ciente do quê se trata <a href='https://rockcontent.com/br/blog/o-que-e-feed-rss/'>aqui ➡️</a>.\n\n<strong>Escolha uma opção abaixo ✅</strong>"
   }, 
   "cmd_error": {
     "text": "Por favor, digite o comando corretamente ⚠️"
@@ -13,6 +13,23 @@
     "chat_alredy_exists": "Este chat já está registrado em meu sistema ⚠️",
     "not_bot_admin": "Preciso ter poderes administrativos, para executar este comando ⚠️",
     "not_admin": "Você precisa ser admistrador do grupo, para executar este comando ⚠️",
-    "success": "Pronto bot conectado✅\n\nVolte ao meu menu, para configurar os feeds para este grupo."
+    "success": "Pronto bot conectado ✅\n\nVolte ao meu menu, para configurar os feeds para este grupo."
+  },
+  "not_member_admin": {
+    "text": "Você não é mais administrador ou membro deste chat ❌"
+  },
+  "view_chat": {
+    "text": "<strong>Gerencie os feeds deste chat ⚙️</strong>\n\n<strong>Comandos para gerencias os feeds 📌</strong>\n\n/add <i>rss_url #hashtags</i>\n\n<code>⬆️ Use este comando para cadastrar um novo feed a seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>⬆️ Use este comando para remover um feed de seu chat.</code>\n\n/update_title <i>titúlo_antigo novo_titúlo</i>\n\n<code>⬆️ Use este comando para atualizar o titúlo de algum feed cadastrado a seu chat.</code>\n\n/update_hashtags <i>titúlo #hashtags_antigas #novas_hashtags</i>\n\n<code>⬆️ Use este comando para atualizar alguma hashtag relacionada a algum feed cadastrado a seu chat.</code>"
+  },
+  "add_feed": {
+    "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /add deve possuir a seguinte estrutura:\n\n/add <i>rss_url #hashtags</i>.",
+    "invalid_rss": "Por favor escolha outro serviço de feed, este não está em perfeitas condições ⚠️",
+    "success": "Feed cadastrado com sucesso ✅",
+    "alredy_exists": "⚠️ Este chat já possui este feed cadastrado, tente outro."
+  },
+  "remove_feed": {
+    "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /remove deve possuir a seguinte estrutura:\n\n/remove <i>titúlo</i>.",
+    "invalid_title": "<strong>❌ Feed com este titúlo não encontrado.</strong>\n\nRevise o valor passado no comando /remove.",
+    "success": "Feed removido com sucesso ✅"
   }
 }

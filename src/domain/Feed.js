@@ -7,6 +7,15 @@ class Feed {
 
     Object.freeze(this);
   }
+
+  getValue() {
+    return {
+      rss_url: this.rss_url,
+      hashtag: this.hashtag,
+      title: this.title,
+      chat_id: this.chat_id,
+    }
+  }
 }
 
 module.exports = Feed;
