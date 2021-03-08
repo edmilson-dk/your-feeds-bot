@@ -49,14 +49,14 @@ class ChatRepository {
 
   async existsChat(chat_id) {
     const exists = await knex('chat')
-    .where({ id: chat_id });
+      .where({ id: chat_id });
 
     return exists.length > 0 ? true : false;
   }
 
   async getDbChat(chat_id) {
     const row = await knex('chat')
-    .where({ id: chat_id });
+      .where({ id: chat_id });
 
     return row;
   }
