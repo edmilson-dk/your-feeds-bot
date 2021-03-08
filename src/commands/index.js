@@ -181,6 +181,11 @@ module.exports = bot => {
       const title = await rssParser.getFeedTitle(rssURL);
       const hashtags_formatted = hashtags.join(' ');
       
+      if ((await feedRepository.existsFeedByTitle(title, chat_id))) {
+        ctx.reply(add_feed.alredy_exists);
+        return;
+      }
+
       await feedRepository.addFeed({ 
         rss_url: rssURL,
         hashtag: hashtags_formatted,

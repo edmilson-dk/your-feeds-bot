@@ -24,7 +24,8 @@
   "add_feed": {
     "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /add deve possuir a seguinte estrutura:\n\n/add <i>rss_url #hashtags</i>.",
     "invalid_rss": "Por favor escolha outro serviço de feed, este não está em perfeitas condições ⚠️",
-    "success": "Feed cadastrado com sucesso ✅"
+    "success": "Feed cadastrado com sucesso ✅",
+    "alredy_exists": "⚠️ Este chat já possui este feed cadastrado, tente outro."
   },
   "remove_feed": {
     "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /remove deve possuir a seguinte estrutura:\n\n/remove <i>titúlo</i>.",
