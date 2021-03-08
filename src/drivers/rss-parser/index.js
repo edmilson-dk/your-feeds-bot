@@ -2,14 +2,23 @@ const Parser = require('rss-parser');
 const parser = new Parser();
 
 class RssParser {
-  async getFeedTitle(rss_url) {
-    const feed = await parser.parseURL(rss_url);
+  async getFeedTitle(rssURL) {
+    const feed = await parser.parseURL(rssURL);
     return feed.title;
   }
 
-  async rssIsValid(rss_url) {
+  async getFeeds(rssURL) {
+    try {
+    const feeds = await parser.parseURL(rssURL);
+    return feeds.items;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async rssIsValid(rssURL) {
     try { 
-      await parser.parseURL(rss_url);
+      await parser.parseURL(rssURL);
       return true;
     } catch (err) {
       console.log(err)
