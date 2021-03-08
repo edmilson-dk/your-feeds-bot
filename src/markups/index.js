@@ -21,7 +21,7 @@ const timezonesMarkup = {
   parse_mode: 'HTML'
 }
 
-const isNotMemberOrAdmin = {
+const isNotMemberOrAdminMarkup = {
   reply_markup: {
     inline_keyboard: [
       [{ text: go_back_btn.text, callback_data: 'start_bot'}]
@@ -30,8 +30,18 @@ const isNotMemberOrAdmin = {
   parse_mode: 'HTML'
 }
 
+const goBackManagerFeedsMarkup = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
+    ]
+  },
+  parse_mode: 'HTML'
+}
+
 module.exports = {
   homeMarkup,
   timezonesMarkup,
-  isNotMemberOrAdmin
+  isNotMemberOrAdminMarkup,
+  goBackManagerFeedsMarkup,
 }
