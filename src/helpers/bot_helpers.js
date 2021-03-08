@@ -34,8 +34,8 @@ function getUserId(ctx, type) {
   }
 }
 
-function removeCommand(message, cmd) {
-  const newMessage = message.replace(cmd, '').trim();
+function removeCommand(message, command) {
+  const newMessage = message.replace(command, '').trim();
   return newMessage;
 }
 
