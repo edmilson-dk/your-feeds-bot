@@ -36,6 +36,13 @@ class UserRepository {
 
     return row;
   }
+
+  async getAllUsersId() {
+    const rows = await knex('user')
+      .select('id');
+
+    return rows;
+  }
 }
 
 module.exports = UserRepository;
