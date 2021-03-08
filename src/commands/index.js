@@ -1,13 +1,13 @@
 const { 
   start_bot, start_service, 
   home, cmd_error, not_member_admin, 
-  view_chat, add_feed 
+  view_chat, add_feed, remove_feed
 } = require('../messages/commands');
 const  { go_back_btn } = require('../messages/inline_keyboard');
 
-const { homeMarkup, timezonesMarkup, isNotMemberOrAdmin } = require('../markups');
+const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin } = require('../helpers/bot_helpers');
-const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, getChatTitleInCommand } = require('../helpers/features_helpers');
+const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
 const Feed = require('../domain/Feed');
@@ -139,36 +139,33 @@ module.exports = bot => {
     const userID = ctx.message.from.id;
     const { id: chatID, title } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
     
-    if ((await isStillMemberAndAdmin(chatID, userID, { bot }))) {
-      const feeds = await feedRepository.getFeeds(chatID);
+    const getMessage = async () => {
+      const feedsList = await listFeeds(feedRepository, chatID);
       
-      let feedsList = '<strong>Feeds ✅</strong>\n';
-      if (feeds && feeds.length > 0) {
-        feeds.forEach((feed, index) => {
-          feedsList += `\n${index} - <i>${feed.title}</i>\n`
-        })
-      } 
+      return [
+        getChatId(ctx), 
+        `${view_chat.text}\n\n${feedsList}`, 
+        goBackManagerFeedsMarkup
+      ];
+    }
 
-      ctx.telegram.sendMessage(getChatId(ctx), `${view_chat.text}<strong>${title}</strong>\n\n${feedsList}`, {
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
-          ]
-        },
-        parse_mode: 'HTML'
-      })
+    if ((await isStillMemberAndAdmin(chatID, userID, { bot }))) {   
+      
+      const message = await getMessage();
+      ctx.telegram.sendMessage(...message);
 
-      bot.command('add', async ctx => await commandAddFeed(ctx, chatID));
+      bot.command('add', async ctx => await addFeedCommand(ctx, chatID, getMessage));
+      bot.command('remove', async ctx => await removeFeedCommand(ctx, chatID, getMessage));
 
     } else {
-      ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdmin);
+      ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdminMarkup);
       await chatRepository.dropChat(userID, chatID);
 
       return;
     }
   })
 
-  async function commandAddFeed(ctx, chat_id) {
+  async function addFeedCommand(ctx, chat_id, getMessage) {
     let data = ctx.message.text.replace('/add', '').trim().split(' ');
     data = removeSpacesInArray(data);
 
@@ -192,11 +189,35 @@ module.exports = bot => {
       });
 
       ctx.reply(add_feed.success);
+      const message = await getMessage();
+      ctx.telegram.sendMessage(...message);
+
       return;
     } else {
       ctx.reply(add_feed.invalid_rss);
       return;
     }
+  }
+
+  async function removeFeedCommand(ctx, chat_id, getMessage) {
+    const feedTitle = ctx.message.text.replace('/remove', '').trim();
+
+    if (!feedTitle) {
+      ctx.telegram.sendMessage(getChatId(ctx), remove_feed.cmd_error, { parse_mode: 'HTML'});
+      return;
+    }
+    if (!(await feedRepository.existsFeedByTitle(feedTitle, chat_id))) {
+      ctx.telegram.sendMessage(getChatId(ctx), remove_feed.invalid_title, { parse_mode: 'HTML'});
+      return;
+    }
+
+    await feedRepository.dropFeed(feedTitle, chat_id);
+
+    ctx.reply(remove_feed.success);
+    const message = await getMessage();
+    ctx.telegram.sendMessage(...message);
+
+    return;
   }
 
   setupFeedActions({bot});
