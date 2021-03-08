@@ -1,9 +1,8 @@
 const { 
   start_bot, start_service, 
   home, cmd_error, not_member_admin, 
-  view_chat, add_feed, remove_feed
+  view_chat, add_feed, remove_feed, times_table
 } = require('../messages/commands');
-const  { go_back_btn } = require('../messages/inline_keyboard');
 
 const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin } = require('../helpers/bot_helpers');
@@ -186,12 +185,8 @@ module.exports = bot => {
         return;
       }
 
-      await feedRepository.addFeed({ 
-        rss_url: rssURL,
-        hashtag: hashtags_formatted,
-        title,
-        chat_id
-      });
+      const feed = new Feed(rssURL, hashtags_formatted, title, chat_id);
+      await feedRepository.addFeed(...feed.getValue());
 
       ctx.reply(add_feed.success);
       const message = await getMessage();
@@ -225,5 +220,16 @@ module.exports = bot => {
     return;
   }
 
-  setupFeedActions({bot});
+  bot.command('times_table', ctx => {
+    const { format, time_end, time_start, intervals } = times_table;
+
+    ctx.telegram.sendMessage(
+      getChatId(ctx), 
+    `${format}\n\n${time_start}\n\n${time_end}\n\n${intervals}`, 
+     goBackManagerFeedsMarkup);
+
+    return;
+  })
+
+  setupFeedActions({ bot });
 }
