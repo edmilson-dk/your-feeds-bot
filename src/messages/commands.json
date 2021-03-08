@@ -1,12 +1,12 @@
 {
   "start_bot": {
-    "text": "⚠️ Importante para utilizar nossos serviços de feed, precisamos que você informe qual é seu fuso horário de sua região em relação ao fuso horário universal UTC 🕝 para os feeds serem postados no horário correto, de onde você vive.\n\nPara isso, basta enviar o comando /register, com o fuso horário logo após o comando, exemplo:\n\n/register +3"
+    "text": "⚠️ Importante para utilizar nossos serviços de feed, precisos que você informe qual é seu fuso horário de sua região em relação ao fuso horário universal UTC 🕝 para os feeds serem postados no horário correto, de onde você vive.\n\nPara isso, basta enviar o comando /register, com o fuso horário logo após o comando, exemplo:\n\n/register +3"
   },
   "home": {
     "text": "Nosso sistema funciona através de serviços de feed RSS, se vocề não souber como funciona, fique ciente do quê se trata <a href='https://rockcontent.com/br/blog/o-que-e-feed-rss/'>aqui ➡️</a>.\n\n<strong>Escolha uma opção abaixo ✅</strong>"
   }, 
   "cmd_error": {
-    "text": "Por favor, digite o comando corretamente ⚠️"
+    "text": "Por favor, digite o comando corretente ⚠️"
   },
   "start_service": {
     "invalid_user": "Usuário inválido ❌",
@@ -33,9 +33,9 @@
     "success": "Feed removido com sucesso ✅"
   },
   "times_table": {
-    "format": "<strong>⚠️ O formato de envio dos horários deve seguir o formato representado abaixo</strong>\n\n/setTime <i>1:00AM 13:00PM 1:00</i>\n/setTime <i>horário_de_início horário_de_termino intervalo</i>\n\n⚠️ Abaixo a lista esta dividida em horários de início que correspondem a horários AM e de termino que correspondem a horários PM, mas está não é uma regra fixa, sinta-se a vontade para escolher horários de início e termino apenas no formato AM ou PM, basta apenas os horários se adequar ao intervalo escolhido.",
-    "time_start": "<strong>🕛 Hoŕarios de início</strong>\n\n▶️ <i>1:00AM</i>\n\n▶️ <i>2:00AM</i>\n\n▶️ <i>3:00AM</i>\n\n▶️ <i>4:00AM</i>\n\n▶️ <i>5:00AM</i>\n\n▶️ <i>6:00AM</i>\n\n▶️ <i>7:00AM</i>\n\n▶️ <i>8:00AM</i>\n\n▶️ <i>9:00AM</i>\n\n▶️ <i>10:00AM</i>\n\n▶️ <i>11:00AM</i>\n\n▶️ <i>12:00AM</i>",
-    "time_end": "<strong>🕡 Hoŕarios de termino</strong>\n\n⏹️ <i>13:00PM</i>\n\n⏹️ <i>14:00PM</i>\n\n⏹️ <i>15:00PM</i>\n\n⏹️ <i>16:00PM</i>\n\n⏹️ <i>17:00PM</i>\n\n⏹️ <i>18:00PM</i>\n\n⏹️ <i>19:00PM</i>\n\n⏹️ <i>20:00PM</i>\n\n⏹️ <i>21:00PM</i>\n\n⏹️ <i>22:00PM</i>\n\n⏹️ <i>23:00PM</i>\n\n⏹️ <i>00:00PM</i>",
-    "intervals": "<strong>⏳ Intervalos entre cada sessão</strong>\n\n⏸️ <i>1:00</i>\n\n⏸️ <i>2:00</i>\n\n⏸️ <i>3:00</i>\n\n⏸️ <i>4:00</i>\n\n⏸️ <i>5:00</i>\n\n⏸️ <i>6:00</i>"
+    "format": "<strong>⚠️ O formato de envio dos horários deve seguir o formato representado abaixo</strong>\n\n/setTime <i>1:00 13:00 1:00</i>\n/setTime <i>horário_de_início horário_de_termino intervalo</i>\n\n⚠️ Abaixo a lista esta dividida em horários de início levando em consideração o horário matinal até o meio dia, e os horários de termino levando em consideração os horários da tarde até a meia noite, mas isto não é uma regra, sinta-se a vontade para utulizar os horários de início e fim do mesmo turno, desde quê eles se adequem ao intervalo escolhido.",
+    "time_start": "<strong>🕛 Horários de início</strong>\n\n▶️ <i>1:00</i>\n\n▶️ <i>2:00</i>\n\n▶️ <i>3:00</i>\n\n▶️ <i>4:00</i>\n\n▶️ <i>5:00</i>\n\n▶️ <i>6:00</i>\n\n▶️ <i>7:00</i>\n\n▶️ <i>8:00</i>\n\n▶️ <i>9:00</i>\n\n▶️ <i>10:00</i>\n\n▶️ <i>11:00</i>\n\n▶️ <i>12:00</i>",
+    "time_end": "<strong>🕡 Horários de termino</strong>\n\n⏹️ <i>13:00</i>\n\n⏹️ <i>14:00</i>\n\n⏹️ <i>15:00</i>\n\n⏹️ <i>16:00</i>\n\n⏹️ <i>17:00</i>\n\n⏹️ <i>18:00</i>\n\n⏹️ <i>19:00</i>\n\n⏹️ <i>20:00</i>\n\n⏹️ <i>21:00</i>\n\n⏹️ <i>22:00</i>\n\n⏹️ <i>23:00</i>\n\n⏹️ <i>00:00</i>",
+    "intervals": "<strong>⏳ Intervalos entre cada sessão</strong>\n\n⏸️ <i>1:00</i>\n\n⏸️ <i>2:00</i>\n\n⏸️ <i>3:00</i>\n\n⏸️ <i>4:00</i>\n\n⏸️ <i>6:00</i>\n\n⏸️ <i>8:00</i>"
   }
 }
