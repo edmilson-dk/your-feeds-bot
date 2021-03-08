@@ -3,6 +3,7 @@ const { start_bot_keyboard, go_back_btn, clicked_chat } = require('../messages/i
 const { getChatId, getUserId } = require('../helpers/bot_helpers')
 const { homeMarkup } = require('../markups');
 const ChatRepository = require('../infra/repositories/chat_repository');
+const { listChats } = require('../helpers/features_helpers');
 
 const { manager_feeds, add_super_chat } = start_bot_keyboard;
 
@@ -20,7 +21,7 @@ module.exports = ({ bot }) => {
     ctx.deleteMessage();
    
     const userID = getUserId(ctx, 'action');
-    const chats = await chatRepository.getAllChatOfUser(String(userID));
+    chatsList = await listChats(chatRepository, userID);
     
     const defaultMarkup = [
       [{ text: manager_feeds.action_update_list, callback_data: 'manager_feeds'},
@@ -28,13 +29,6 @@ module.exports = ({ bot }) => {
       [{ text: go_back_btn.text, callback_data: 'start_bot' }],
     ]
 
-    let chatsList = '<strong>Chats ✅</strong>\n';
-    if (chats && chats.length > 0) {
-      chats.forEach((chat, index) => {
-        chatsList += `\n${index} - <i>${chat.title}</i>\n`;
-      })
-    }
-   
     ctx.telegram.sendMessage(getChatId(ctx), `${manager_feeds.action_text}\n\n${chatsList}`, {
       reply_markup: {
         inline_keyboard: defaultMarkup, 
