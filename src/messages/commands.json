@@ -9,7 +9,7 @@
     "text": "Por favor, digite o comando corretamente ⚠️"
   },
   "start_service": {
-    "invalid_user": "Úsuario inválido ❌",
+    "invalid_user": "Usuário inválido ❌",
     "chat_alredy_exists": "Este chat já está registrado em meu sistema ⚠️",
     "not_bot_admin": "Preciso ter poderes administrativos, para executar este comando ⚠️",
     "not_admin": "Você precisa ser admistrador do grupo, para executar este comando ⚠️",
