@@ -19,7 +19,7 @@
     "text": "Você não é mais administrador ou membro deste chat ❌"
   },
   "view_chat": {
-    "text": "<strong>Gerencie os feeds deste chat ⚙️</strong>\n\n<strong>Comandos para gerencias os feeds 📌</strong>\n\n/add <i>rss_url #hashtags</i>\n\n<code>⬆️ Use este comando para cadastrar um novo feed a seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>⬆️ Use este comando para remover um feed de seu chat.</code>\n\n/update_title <i>titúlo_antigo novo_titúlo</i>\n\n<code>⬆️ Use este comando para atualizar o titúlo de algum feed cadastrado a seu chat.</code>\n\n/update_hashtags <i>titúlo #hashtags_antigas #novas_hashtags</i>\n\n<code>⬆️ Use este comando para atualizar alguma hashtag relacionada a algum feed cadastrado a seu chat.</code>"
+    "text": "<strong>Gerencie os feeds deste chat ⚙️</strong>\n\n<strong>Comandos para gerencias os feeds 📌</strong>\n\n/setTime <i>horário_de_início horário_de_termino intervalo</i>\n\n<code>⬆️ Use este comando uma única vez, para informar ao bot, em qual horário ele deve iniciar as postagens em seu chat, qual horário ele deve parar, e por último qual o intervalo em horas entre cada sessão de postagens, para ver a tabela com o formato adequado que você deve enviar os horários além de poder visualizar os horários de inicio e fim além da de intervalos disponivéis, envie o comando</code> /times_table\n\n/add <i>rss_url #hashtags</i>\n\n<code>⬆️ Use este comando para cadastrar um novo feed a seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>⬆️ Use este comando para remover um feed de seu chat.</code>\n\n/update_title <i>titúlo_antigo novo_titúlo</i>\n\n<code>⬆️ Use este comando para atualizar o titúlo de algum feed cadastrado a seu chat.</code>\n\n/update_hashtags <i>titúlo #hashtags_antigas #novas_hashtags</i>\n\n<code>⬆️ Use este comando para atualizar alguma hashtag relacionada a algum feed cadastrado a seu chat.</code>"
   },
   "add_feed": {
     "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /add deve possuir a seguinte estrutura:\n\n/add <i>rss_url #hashtags</i>.",
@@ -31,5 +31,11 @@
     "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /remove deve possuir a seguinte estrutura:\n\n/remove <i>titúlo</i>.",
     "invalid_title": "<strong>❌ Feed com este titúlo não encontrado.</strong>\n\nRevise o valor passado no comando /remove.",
     "success": "Feed removido com sucesso ✅"
+  },
+  "times_table": {
+    "format": "<strong>⚠️ O formato de envio dos horários deve seguir o formato representado abaixo</strong>\n\n/setTime <i>1:00AM 13:00PM 1:00</i>\n/setTime <i>horário_de_início horário_de_termino intervalo</i>\n\n⚠️ Abaixo a lista esta dividida em horários de início que correspondem a horários AM e de termino que correspondem a horários PM, mas está não é uma regra fixa, sinta-se a vontade para escolher horários de início e termino apenas no formato AM ou PM, basta apenas os horários se adequar ao intervalo escolhido.",
+    "time_start": "<strong>🕛 Hoŕarios de início</strong>\n\n▶️ <i>1:00AM</i>\n\n▶️ <i>2:00AM</i>\n\n▶️ <i>3:00AM</i>\n\n▶️ <i>4:00AM</i>\n\n▶️ <i>5:00AM</i>\n\n▶️ <i>6:00AM</i>\n\n▶️ <i>7:00AM</i>\n\n▶️ <i>8:00AM</i>\n\n▶️ <i>9:00AM</i>\n\n▶️ <i>10:00AM</i>\n\n▶️ <i>11:00AM</i>\n\n▶️ <i>12:00AM</i>",
+    "time_end": "<strong>🕡 Hoŕarios de termino</strong>\n\n⏹️ <i>13:00PM</i>\n\n⏹️ <i>14:00PM</i>\n\n⏹️ <i>15:00PM</i>\n\n⏹️ <i>16:00PM</i>\n\n⏹️ <i>17:00PM</i>\n\n⏹️ <i>18:00PM</i>\n\n⏹️ <i>19:00PM</i>\n\n⏹️ <i>20:00PM</i>\n\n⏹️ <i>21:00PM</i>\n\n⏹️ <i>22:00PM</i>\n\n⏹️ <i>23:00PM</i>\n\n⏹️ <i>00:00PM</i>",
+    "intervals": "<strong>⏳ Intervalos entre cada sessão</strong>\n\n⏸️ <i>1:00</i>\n\n⏸️ <i>2:00</i>\n\n⏸️ <i>3:00</i>\n\n⏸️ <i>4:00</i>\n\n⏸️ <i>5:00</i>\n\n⏸️ <i>6:00</i>"
   }
 }
