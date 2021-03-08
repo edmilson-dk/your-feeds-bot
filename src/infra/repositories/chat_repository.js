@@ -68,6 +68,13 @@ class ChatRepository {
 
     return;
   }
+
+  async getAllChatsId() {
+    const rows = await knex('chat')
+      .select('id');
+
+    return rows;
+  }
 }
 
 module.exports = ChatRepository;
