@@ -83,13 +83,17 @@ function formatTimes(time) {
 }
 
 function isAppropriateTime(startTime, endTime, intervalTime) {
-  const [ startHours, minutes ] = startTime.split(':');
-  const [ endHours, minutes ] = endTime.split(':');
-  const [ intervalHours, minutes ] = intervalTime.split(':');
-  const totalTime = Number(startHours) - Number(endHours);
-  console.log(totalTime);
+  const [ startHours, ] = startTime.split(':');
+  const [ endHours, ] = endTime.split(':');
+  const [ intervalHours, ] = intervalTime.split(':');
 
- // if (startTime === endTime) return true;
+  const totalTime = startHours === endHours 
+    ? 24
+    : Number(endHours) - Number(startHours) + 1;
+
+  const isIntervalValid = totalTime % intervalHours === 0;
+
+  return isIntervalValid;
 }
 
 module.exports = {
@@ -101,4 +105,5 @@ module.exports = {
   listChats,
   validateTimes,
   formatTimes,
+  isAppropriateTime,
 }
