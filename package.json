@@ -10,6 +10,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "cron": "^1.8.2",
     "dotenv": "^8.2.0",
     "knex": "^0.21.18",
     "pg": "^8.5.1",

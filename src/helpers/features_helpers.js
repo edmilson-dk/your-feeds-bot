@@ -54,11 +54,41 @@ async function listChats(chatRepository, userID) {
   return chatsList;
 }
 
+function validateTimes(time, isInterval = false) {
+  const times = time.split(':');
+  const hours = times[0]; 
+
+  if (times.length < 2) return false;
+
+  if (isInterval) {   
+     if (Number(hours) < process.env.BOT_POST_INTERVAL_MIN) return false;
+     if (Number(hours) > process.env.BOT_POST_INTERVAL_MAX) return false;
+     return true;
+   }
+
+   if (hours === '00') return true;
+   if (hours === '0') return false;
+   if (Number(hours) < process.env.BOT_POST_TIME_MIN) return false;
+   if (Number(hours) > process.env.BOT_POST_TIME_MAX) return false;
+
+   return true;
+}
+
+function formatTimes(time) {
+  const timeFormatted = time.split(':');
+  const [ hours, minutes] = timeFormatted;
+ 
+  if (hours === '0') return `${hours}0:00`;
+  return `${hours}:00`;
+}
+
 module.exports = {
   asyncFilter,
   isHashtagsValid,
   removeSpacesInArray,
   removeNotHashtagsInArray,
   listFeeds,
-  listChats
+  listChats,
+  validateTimes,
+  formatTimes,
 }

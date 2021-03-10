@@ -1,13 +1,14 @@
 const { 
   start_bot, start_service, 
   home, cmd_error, not_member_admin, 
-  view_chat, add_feed, remove_feed
+  view_chat, add_feed, remove_feed, times_table, set_time
 } = require('../messages/commands');
-const  { go_back_btn } = require('../messages/inline_keyboard');
-
 const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
-const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin } = require('../helpers/bot_helpers');
-const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
+const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
+const {
+   asyncFilter, isHashtagsValid, removeSpacesInArray,
+   removeNotHashtagsInArray, listFeeds, validateTimes, formatTimes
+} = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
 const Feed = require('../domain/Feed');
@@ -156,6 +157,7 @@ module.exports = bot => {
 
       bot.command('add', async ctx => await addFeedCommand(ctx, chatID, getMessage));
       bot.command('remove', async ctx => await removeFeedCommand(ctx, chatID, getMessage));
+      bot.command('setTime', async ctx => await setTimeCommand(ctx, chatID, getMessage));
 
     } else {
       ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdminMarkup);
@@ -166,11 +168,16 @@ module.exports = bot => {
   })
 
   async function addFeedCommand(ctx, chat_id, getMessage) {
-    let data = ctx.message.text.replace('/add', '').trim().split(' ');
+    let data = removeCommand(ctx.message.text, '/add').split(' ');
     data = removeSpacesInArray(data);
 
     const rssURL = data.slice(0, 1).toString();
     const hashtags = removeNotHashtagsInArray(data);
+
+    if (hashtags.length > 3) {
+      ctx.telegram.sendMessage(getChatId(ctx), '⚠️ Você deve enviar no máximo 3 hashtags.');
+      return;
+    }
 
     if (!isHashtagsValid(hashtags)) {
       ctx.telegram.sendMessage(getChatId(ctx), add_feed.cmd_error, { parse_mode: 'HTML'});
@@ -186,12 +193,8 @@ module.exports = bot => {
         return;
       }
 
-      await feedRepository.addFeed({ 
-        rss_url: rssURL,
-        hashtag: hashtags_formatted,
-        title,
-        chat_id
-      });
+      const feed = new Feed(rssURL, hashtags_formatted, title, chat_id);
+      await feedRepository.addFeed(feed.getValue());
 
       ctx.reply(add_feed.success);
       const message = await getMessage();
@@ -205,7 +208,7 @@ module.exports = bot => {
   }
 
   async function removeFeedCommand(ctx, chat_id, getMessage) {
-    const feedTitle = ctx.message.text.replace('/remove', '').trim();
+    const feedTitle = removeCommand(ctx.message.text, '/remove');
 
     if (!feedTitle) {
       ctx.telegram.sendMessage(getChatId(ctx), remove_feed.cmd_error, { parse_mode: 'HTML'});
@@ -225,5 +228,51 @@ module.exports = bot => {
     return;
   }
 
-  setupFeedActions({bot});
+  async function setTimeCommand(ctx, chat_id, getMessage) {
+    const values = removeCommand(ctx.message.text, '/setTime').split(' ');
+
+    if (values.length < 2) {
+      ctx.reply(set_time.cmd_error);
+      return;
+    }
+
+    const [ startPostsTime, endPostsTime ] = values;
+
+    if (!validateTimes(startPostsTime)) {
+      ctx.reply(set_time.start_time_error);
+      return;
+    }
+    if (!validateTimes(endPostsTime)) {
+      ctx.reply(set_time.end_time_error);
+      return;
+    }
+    
+    let validStartPostsTime = formatTimes(startPostsTime);
+    let validEndPostsTime = formatTimes(endPostsTime);
+  
+    await chatRepository.updateTimesChat({
+      chat_id,
+      start_posts: validStartPostsTime,
+      end_posts: validEndPostsTime 
+      });
+
+    ctx.reply(set_time.success);
+    const message = await getMessage();
+    ctx.telegram.sendMessage(...message);
+
+    return;
+  }
+
+  bot.command('times_table', ctx => {
+    const { format, time_end, time_start } = times_table;
+
+    ctx.telegram.sendMessage(
+      getChatId(ctx), 
+    `${format}\n\n${time_start}\n\n${time_end}`, 
+     goBackManagerFeedsMarkup);
+
+    return;
+  })
+
+  setupFeedActions({ bot });
 }
