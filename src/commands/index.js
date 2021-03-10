@@ -1,7 +1,7 @@
 const { 
   start_bot, start_service, 
   home, cmd_error, not_member_admin, 
-  view_chat, add_feed, remove_feed, times_table
+  view_chat, add_feed, remove_feed, times_table, set_time
 } = require('../messages/commands');
 const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
@@ -232,18 +232,18 @@ module.exports = bot => {
     const values = removeCommand(ctx.message.text, '/setTime').split(' ');
 
     if (values.length < 2) {
-      ctx.reply('⚠️ Por favor, envie o comando com todos os dados corretamente.');
+      ctx.reply(set_time.cmd_error);
       return;
     }
 
     const [ startPostsTime, endPostsTime ] = values;
 
     if (!validateTimes(startPostsTime)) {
-      ctx.reply('⚠️ Formato do horário de início das postagens inválido.');
+      ctx.reply(set_time.start_time_error);
       return;
     }
     if (!validateTimes(endPostsTime)) {
-      ctx.reply('⚠️ Formato do horário de termino das postagens inválido.');
+      ctx.reply(set_time.end_time_error);
       return;
     }
     
@@ -256,7 +256,7 @@ module.exports = bot => {
       end_posts: validEndPostsTime 
       });
 
-    ctx.reply('✅ Horários definidos com sucesso.');
+    ctx.reply(set_time.success);
     const message = await getMessage();
     ctx.telegram.sendMessage(...message);
 
