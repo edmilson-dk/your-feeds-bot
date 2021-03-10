@@ -158,6 +158,7 @@ module.exports = bot => {
       bot.command('add', async ctx => await addFeedCommand(ctx, chatID, getMessage));
       bot.command('remove', async ctx => await removeFeedCommand(ctx, chatID, getMessage));
       bot.command('setTime', async ctx => await setTimeCommand(ctx, chatID, getMessage));
+      bot.command('active', async ctx => await activeChatCommand(ctx, chatID, getMessage));
 
     } else {
       ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdminMarkup);
@@ -261,6 +262,15 @@ module.exports = bot => {
     ctx.telegram.sendMessage(...message);
 
     return;
+  }
+
+  async function activeChatCommand(ctx, chat_id, getMessage) {
+    if (!(await feedRepository.containChat(chat_id))) {
+      ctx.reply('⚠️ Este chat ainda não está completamente configurado, você precisa adicionar algum feed, para poder ativar as postagens.');
+      return;
+    }
+
+    await chatRepository.updateActiveChat(true, chat_id)
   }
 
   bot.command('times_table', ctx => {
