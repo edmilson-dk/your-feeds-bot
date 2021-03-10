@@ -43,7 +43,7 @@ async function listFeeds(feedRepository, chatID) {
 
 async function listChats(chatRepository, userID) {
   const chats = await chatRepository.getAllChatOfUser(String(userID));
-
+  console.log(chats)
   let chatsList = '<strong>Chats 📌</strong>\n';
   if (chats && chats.length > 0) {
     chats.forEach(chat => {
