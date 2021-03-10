@@ -21,6 +21,12 @@
   "view_chat": {
     "text": "<strong>Gerencie os feeds deste chat ⚙️</strong>\n\n<strong>Comandos para gerencias os feeds 📌</strong>\n\n/setTime <i>horário_de_início horário_de_termino</i>\n\n<code>⬆️ Use este comando uma única vez, para informar ao bot, em qual horário ele deve iniciar as postagens em seu chat, qual horário ele deve parar, sessão de postagens, para ver a tabela com o formato adequado que você deve enviar os horários além de poder visualizar os horários de inicio e fim disponivéis, envie o comando</code> /times_table\n\n/add <i>rss_url #hashtags</i>\n\n<code>⬆️ Use este comando para cadastrar um novo feed a seu chat, envie a url do serviço desejado de RSS e no máximo 3 hashtags para identificar as postagens em seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>⬆️ Use este comando para remover um feed de seu chat.</code>\n\n/update_title <i>titúlo_antigo novo_titúlo</i>\n\n<code>⬆️ Use este comando para atualizar o titúlo de algum feed cadastrado a seu chat.</code>\n\n/update_hashtags <i>titúlo #hashtags_antigas #novas_hashtags</i>\n\n<code>⬆️ Use este comando para atualizar alguma hashtag relacionada a algum feed cadastrado a seu chat.</code>"
   },
+  "set_time": {
+    "cmd_error": "⚠️ Por favor, envie o comando com todos os dados corretamente.",
+    "start_time_error": "⚠️ Formato do horário de início das postagens inválido.",
+    "end_time_error": "⚠️ Formato do horário de termino das postagens inválido.",
+    "success": "✅ Horários definidos com sucesso."
+  },
   "add_feed": {
     "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /add deve possuir a seguinte estrutura:\n\n/add <i>rss_url #hashtags</i>.",
     "invalid_rss": "Por favor escolha outro serviço de feed, este não está em perfeitas condições ⚠️",
