@@ -82,20 +82,6 @@ function formatTimes(time) {
   return `${hours}:00`;
 }
 
-function isAppropriateTime(startTime, endTime, intervalTime) {
-  const [ startHours, ] = startTime.split(':');
-  const [ endHours, ] = endTime.split(':');
-  const [ intervalHours, ] = intervalTime.split(':');
-
-  const totalTime = startHours === endHours 
-    ? 24
-    : Number(endHours) - Number(startHours) + 1;
-
-  const isIntervalValid = totalTime % intervalHours === 0;
-
-  return isIntervalValid;
-}
-
 module.exports = {
   asyncFilter,
   isHashtagsValid,
@@ -105,5 +91,4 @@ module.exports = {
   listChats,
   validateTimes,
   formatTimes,
-  isAppropriateTime,
 }
