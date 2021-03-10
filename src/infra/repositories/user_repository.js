@@ -4,7 +4,7 @@ class UserRepository {
   async add({ user_id, username, timezone }) {
     if ((await this.existsUser(user_id))) return;
     
-    await knex('user')
+    await knex('users')
       .insert({
         id: user_id,
         username,
@@ -15,7 +15,7 @@ class UserRepository {
   }
 
   async dropUser(user_id) {
-    await knex('user')
+    await knex('users')
       .where({ id: user_id })
       .del();
 
@@ -23,14 +23,14 @@ class UserRepository {
   }
 
   async existsUser(user_id) {
-    const exists = await knex('user')
+    const exists = await knex('users')
       .where({ id: user_id });
 
     return exists.length > 0 ? true : false;
   }
 
   async getUser(user_id) {
-    const row = await knex('user')
+    const row = await knex('users')
       .select()
       .where({ id: user_id });
 
@@ -38,7 +38,7 @@ class UserRepository {
   }
 
   async getAllUsersId() {
-    const rows = await knex('user')
+    const rows = await knex('users')
       .select('id');
 
     return rows;
