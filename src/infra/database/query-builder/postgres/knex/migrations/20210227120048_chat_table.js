@@ -6,6 +6,7 @@ exports.up = function(knex) {
         table.string('title', 100).notNullable();
         table.string('start_posts', 20).notNullable();
         table.string('end_posts', 20).notNullable();
+        table.boolean('active').defaultTo(false);
 
         // relation to user table
         table.string('user_id')
