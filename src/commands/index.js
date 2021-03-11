@@ -1,14 +1,7 @@
-const { 
-  start_bot, start_service, 
-  home, cmd_error, not_member_admin, 
-  view_chat, add_feed, remove_feed, times_table, set_time
-} = require('../messages/commands');
+const { start_service, home, cmd_error, not_member_admin, view_chat, add_feed, remove_feed, active_feed } = require('../messages/commands');
 const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
-const {
-   asyncFilter, isHashtagsValid, removeSpacesInArray,
-   removeNotHashtagsInArray, listFeeds, validateTimes, formatTimes
-} = require('../helpers/features_helpers');
+const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
 const Feed = require('../domain/Feed');
@@ -31,32 +24,16 @@ module.exports = bot => {
 
   bot.start(async ctx => {
     const { type } = await ctx.getChat();
-    const userID = String(ctx.from.id);
+    const userID = ctx.from.id;
+    const username = ctx.from.username;
 
     if (type === 'private') {
-      !(await userRepository.existsUser(userID))
-        ? ctx.telegram.sendMessage(getChatId(ctx), start_bot.text, timezonesMarkup)
-        : ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
+      await userRepository.add({ user_id: userID, username });
+
+      ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
     } else {
       ctx.telegram.sendMessage(getChatId(ctx), 'Olá!'); 
     }
-
-    return;
-  })
-
-  bot.command('register', async ctx => {
-    const [, timezone] = ctx.message.text.split(' ');
-
-    if (!timezone) {
-      ctx.reply(cmd_error.text);
-      return;
-    }
-
-    const user = new User(ctx.from.id, ctx.from.username, timezone);
-    await userRepository.add(user.getValue());
-    
-    ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
-
     return;
   })
 
@@ -138,7 +115,7 @@ module.exports = bot => {
     }
 
     const userID = ctx.message.from.id;
-    const { id: chatID, title } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
+    const { id: chatID } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
     
     const getMessage = async () => {
       const feedsList = await listFeeds(feedRepository, chatID);
@@ -157,7 +134,7 @@ module.exports = bot => {
 
       bot.command('add', async ctx => await addFeedCommand(ctx, chatID, getMessage));
       bot.command('remove', async ctx => await removeFeedCommand(ctx, chatID, getMessage));
-      bot.command('setTime', async ctx => await setTimeCommand(ctx, chatID, getMessage));
+      bot.command('active', async ctx => await activeChatCommand(ctx, chatID, getMessage));
 
     } else {
       ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdminMarkup);
@@ -175,7 +152,7 @@ module.exports = bot => {
     const hashtags = removeNotHashtagsInArray(data);
 
     if (hashtags.length > 3) {
-      ctx.telegram.sendMessage(getChatId(ctx), '⚠️ Você deve enviar no máximo 3 hashtags.');
+      ctx.telegram.sendMessage(getChatId(ctx), add_feed.max_hashtags);
       return;
     }
 
@@ -228,51 +205,18 @@ module.exports = bot => {
     return;
   }
 
-  async function setTimeCommand(ctx, chat_id, getMessage) {
-    const values = removeCommand(ctx.message.text, '/setTime').split(' ');
-
-    if (values.length < 2) {
-      ctx.reply(set_time.cmd_error);
+  async function activeChatCommand(ctx, chat_id, getMessage) {
+    if (!(await feedRepository.containChat(chat_id))) {
+      ctx.reply(active_feed.error);
       return;
     }
 
-    const [ startPostsTime, endPostsTime ] = values;
+    await chatRepository.updateActiveChat(true, chat_id);
 
-    if (!validateTimes(startPostsTime)) {
-      ctx.reply(set_time.start_time_error);
-      return;
-    }
-    if (!validateTimes(endPostsTime)) {
-      ctx.reply(set_time.end_time_error);
-      return;
-    }
-    
-    let validStartPostsTime = formatTimes(startPostsTime);
-    let validEndPostsTime = formatTimes(endPostsTime);
-  
-    await chatRepository.updateTimesChat({
-      chat_id,
-      start_posts: validStartPostsTime,
-      end_posts: validEndPostsTime 
-      });
-
-    ctx.reply(set_time.success);
+    ctx.reply(active_feed.success);
     const message = await getMessage();
     ctx.telegram.sendMessage(...message);
-
-    return;
   }
-
-  bot.command('times_table', ctx => {
-    const { format, time_end, time_start } = times_table;
-
-    ctx.telegram.sendMessage(
-      getChatId(ctx), 
-    `${format}\n\n${time_start}\n\n${time_end}`, 
-     goBackManagerFeedsMarkup);
-
-    return;
-  })
 
   setupFeedActions({ bot });
 }

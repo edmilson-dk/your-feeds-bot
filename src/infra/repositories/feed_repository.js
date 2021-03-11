@@ -14,12 +14,19 @@ class FeedRepository {
   }
 
   async getFeeds(chat_id) {
-    const rows = knex('feeds')
+    const rows = await knex('feeds')
       .where({ chat_id })
       .join('chats', 'chats.id', '=', 'feeds.chat_id')
       .select('feeds.*')
 
     return rows;
+  }
+
+  async containChat(chat_id) {
+    const contain = await knex('feeds')
+      .where({ chat_id })
+
+    return contain.length > 0 ? true : false;
   }
 
   async dropFeed(feed_title, chat_id) {

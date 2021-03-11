@@ -4,17 +4,13 @@ class ChatRepository {
   async addChat({
     id, 
     title, 
-    user_id, 
-    start_posts, 
-    end_posts
+    user_id
     }) {
     await knex('chats')
       .insert({
         id,
         title,
         user_id,
-        start_posts,
-        end_posts,
       });
 
     return;
@@ -72,12 +68,18 @@ class ChatRepository {
     return rows;
   }
 
-  async updateTimesChat({ chat_id, start_posts, end_posts }) {
+  async getAllChatsIdActive() {
+    const rows = await knex('chats')
+      .select('id')
+      .where({ active: true })
+
+    return rows;
+  }
+
+  async updateActiveChat(active, chat_id) {
     await knex('chats')
       .where({ id: chat_id })
-      .update({ start_posts, end_posts })
-
-    return;
+      .update({ active })
   }
 }
 

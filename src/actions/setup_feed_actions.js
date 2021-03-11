@@ -21,7 +21,7 @@ module.exports = ({ bot }) => {
     ctx.deleteMessage();
    
     const userID = getUserId(ctx, 'action');
-    chatsList = await listChats(chatRepository, userID);
+    const chatsList = await listChats(chatRepository, userID);
     
     const defaultMarkup = [
       [{ text: manager_feeds.action_update_list, callback_data: 'manager_feeds'},
