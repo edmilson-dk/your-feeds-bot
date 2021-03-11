@@ -4,8 +4,7 @@ exports.up = function (knex) {
       return knex.schema.createTable('users', table=> {
         table.string('id', 60).notNullable().unique();
         table.string('username', 100).notNullable();
-        table.string('timezone', 10).notNullable();
-
+  
         table.timestamp('created_at').defaultTo(knex.fn.now());
       })
     }
