@@ -4,7 +4,8 @@ exports.up = function(knex) {
       return knex.schema.createTable('chats', table => {
         table.string('id', 60).notNullable().unique();
         table.string('title', 100).notNullable();
-        table.boolean('active').defaultTo(false);
+        table.boolean('is_active').defaultTo(false);
+        table.boolean('is_active_configuration').defaultTo(false);
 
         // relation to user table
         table.string('user_id')
