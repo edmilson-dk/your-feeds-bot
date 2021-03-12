@@ -9,11 +9,10 @@ const feedRepository = new FeedRepository();
 const postRepository = new PostRepository();
 
 const rssParser = new RssParser();
+const time = new Date;
 
-async function getChatsData(oneChatId) {
-  const chatsIds = oneChatId 
-    ? oneChatId
-    : await chatRepository.getAllChatsIdActive();
+async function getChatsData() {
+  const chatsIds = await chatRepository.getAllChatsIdActive();
 
   if (chatsIds.length === 0) return chatsIds;
 
@@ -53,28 +52,38 @@ function sendMessages({ feed, data, bot }) {
         bot.telegram.sendMessage(feed.chat_id, 
           `<strong>Novo post ✅</strong><code>\n\n${item.title}</code>\n\n<a href='${item.link}'>Ler post completo ➡️</a>\n\nDe: <i>${feed.title}</i>\n\n${feed.hashtags}`, 
           { parse_mode: 'HTML'})
-      }, index * 6000);
+      }, index * 60000);
     }
   });
+}
+
+function isUTCMidNight() {
+  const utcHours = time.getUTCHours() === 00;
+  const utcMinutes = time.getUTCMinutes() === 00;
+  const utcSeconds = time.getUTCSeconds() <= 58;
+
+  return (utcHours && utcMinutes && utcSeconds) ? true : false;
 }
 
 async function start(bot) {
   const data = await getChatsData();
 
+  if (isUTCMidNight()) await postRepository.dropAllPosts();
   if (data.length === 0) return data;
   
   data.forEach(async feed => {
     const { count } = await postRepository.getPostsCount({ chat_id: feed.chat_id});
 
     feed.data.splice(0, count);
-    const items = feed.data.slice(0, 1);
+    const items = feed.data.slice(0, 10);
+
     sendMessages({ feed, data: items, bot });
   });
 }
 
 async function main(bot) {
   await start(bot);
-  setInterval(async () => await start(bot), 8000);
+  setInterval(async () => await start(bot), 600000);
 }
 
 module.exports = main;

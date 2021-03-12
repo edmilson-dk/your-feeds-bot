@@ -1,5 +1,5 @@
 const { start_service, home, cmd_error, not_member_admin, view_chat, add_feed, remove_feed, active_feed } = require('../messages/commands');
-const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
+const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
 const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
 
@@ -24,26 +24,36 @@ module.exports = bot => {
 
   bot.start(async ctx => {
     const { type } = await ctx.getChat();
-    const userID = ctx.from.id;
+    const userId = ctx.from.id;
     const username = ctx.from.username;
 
     if (type === 'private') {
-      await userRepository.add({ user_id: userID, username });
+      await chatRepository.setNotActiveConfigChats(String(userId));
+      
+      const user = new User(userId, username);
+      await userRepository.add(user.getValue());
 
       ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
+      return;
     } else {
       ctx.telegram.sendMessage(getChatId(ctx), 'Olá!'); 
+      return;
     }
-    return;
   })
 
- bot.command('start_service', async ctx => {
-    const { type, id: chatID, title } = await ctx.getChat();
-    const userID = ctx.from.id;
-    const isUserAdmin = await isAdmin(userID, ctx);
-    const isUserValid = await userRepository.existsUser(String(userID));
-    const chat = new Chat(chatID, title, userID);
-    
+  bot.command('start_service', async ctxStartServiceCmd => startServiceCommand(ctxStartServiceCmd));
+  bot.command('view_chat', async ctxViewChatCmd => viewChatCommand(ctxViewChatCmd));
+  bot.command('add', async ctxAddCmd => await addFeedCommand(ctxAddCmd, finishedViewChatCmd));
+  bot.command('remove', async ctxRemoveCmd => await removeFeedCommand(ctxRemoveCmd, finishedViewChatCmd));
+  bot.command('active', async ctxActiveCmd => await activeChatCommand(ctxActiveCmd, finishedViewChatCmd));
+
+  async function startServiceCommand(ctx) {
+    const { type, id: chatId, title } = await ctx.getChat();
+    const userId = ctx.from.id;
+    const isUserAdmin = await isAdmin(userId, ctx);
+    const isUserValid = await userRepository.existsUser(String(userId));
+    const chat = new Chat(chatId, title, userId);
+      
     if (type !== 'private') {
       if (!isUserValid) {
         ctx.reply(start_service.invalid_user);
@@ -57,19 +67,19 @@ module.exports = bot => {
         ctx.reply(start_service.not_admin);
         return;
       }
-      if ((await chatRepository.existsChat(chatID))) {
+      if ((await chatRepository.existsChat(chatId))) {
         ctx.reply(start_service.chat_alredy_exists);
         return;
       } 
-
+  
       await chatRepository.addChat(chat.getValues());
       ctx.reply(start_service.success);  
-
+  
       return;
     }
-
+  
     return;
-  })
+  }
 
   bot.on('channel_post', async ctx => {
     const text = ctx.update.channel_post.text;
@@ -81,14 +91,14 @@ module.exports = bot => {
       return exists;
     });
 
-    const userID = userActiveSessionId.length > 0 
+    const userId = userActiveSessionId.length > 0 
       ? userActiveSessionId[0].user.id
       : undefined;
       
-    const { id: chatID, title } = await ctx.getChat();
+    const { id: chatId, title } = await ctx.getChat();
     let chat = null;
     
-    if (userID) chat = new Chat(chatID, title, userID);
+    if (userId) chat = new Chat(chatId, title, userId);
 
     if (text === '/start_service') {
       if ((await isBotAdmin(ctx)) && chat) {
@@ -97,7 +107,7 @@ module.exports = bot => {
 
         return;
       }
-      if ((await chatRepository.existsChat(chatID))) {
+      if ((await chatRepository.existsChat(chatId))) {
         ctx.reply(start_service.chat_alredy_exists);
         return;
       } 
@@ -106,45 +116,44 @@ module.exports = bot => {
     return;
   })
 
-  bot.command('view_chat', async ctx => {
-    const chatTitle = ctx.message.text.replace('/view_chat', '').trim();
+  async function finishedViewChatCmd(ctx, chatId, reset = false) {
+    const feedsList = await listFeeds(feedRepository, chatId);
+    const userId = String(ctx.message.from.id);
+
+    return [
+      getChatId(ctx), 
+      `${view_chat.text}\n\n${feedsList}`, 
+      goBackManagerFeedsMarkup
+    ];
+  }
+
+  async function viewChatCommand(ctx) {
+    const chatTitle = removeCommand(ctx.message.text,'/view_chat');
    
     if (!chatTitle) {
       ctx.reply(cmd_error.text);
       return;
     }
 
-    const userID = ctx.message.from.id;
-    const { id: chatID } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
-    
-    const getMessage = async () => {
-      const feedsList = await listFeeds(feedRepository, chatID);
-      
-      return [
-        getChatId(ctx), 
-        `${view_chat.text}\n\n${feedsList}`, 
-        goBackManagerFeedsMarkup
-      ];
-    }
+    const userId = String(ctx.message.from.id);
+    const { id: chatId } = await chatRepository.getOneChatByTitle(String(userId), chatTitle);
 
-    if ((await isStillMemberAndAdmin(chatID, userID, { bot }))) {   
-      
-      const message = await getMessage();
+    if ((await isStillMemberAndAdmin(chatId, userId, { bot }))) {   
+      await chatRepository.setActiveConfigChat(chatId, userId, true);
+
+      const message = await finishedViewChatCmd(ctx, chatId);
       ctx.telegram.sendMessage(...message);
-
-      bot.command('add', async ctx => await addFeedCommand(ctx, chatID, getMessage));
-      bot.command('remove', async ctx => await removeFeedCommand(ctx, chatID, getMessage));
-      bot.command('active', async ctx => await activeChatCommand(ctx, chatID, getMessage));
+      return;
 
     } else {
-      ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdminMarkup);
-      await chatRepository.dropChat(userID, chatID);
+      ctx.telegram.sendMessage(chatId, not_member_admin.text, isNotMemberOrAdminMarkup);
+      await chatRepository.dropChat(userId, chatId);
 
       return;
     }
-  })
+  }
 
-  async function addFeedCommand(ctx, chat_id, getMessage) {
+  async function addFeedCommand(ctx, finishedViewChatCmd) {
     let data = removeCommand(ctx.message.text, '/add').split(' ');
     data = removeSpacesInArray(data);
 
@@ -162,19 +171,22 @@ module.exports = bot => {
     } 
     
     if ((await rssParser.rssIsValid(rssURL))) {
+      const userId = String(ctx.message.from.id);
+
       const title = await rssParser.getFeedTitle(rssURL);
       const hashtags_formatted = hashtags.join(' ');
-      
-      if ((await feedRepository.existsFeedByTitle(title, chat_id))) {
+      const chatId = await chatRepository.getIsActiveConfigChat(userId);
+     
+      if ((await feedRepository.existsFeedByTitle(title, chatId))) {
         ctx.reply(add_feed.alredy_exists);
         return;
       }
 
-      const feed = new Feed(rssURL, hashtags_formatted, title, chat_id);
+      const feed = new Feed(rssURL, hashtags_formatted, title, chatId);
       await feedRepository.addFeed(feed.getValue());
 
       ctx.reply(add_feed.success);
-      const message = await getMessage();
+      const message = await finishedViewChatCmd(ctx, chatId);
       ctx.telegram.sendMessage(...message);
 
       return;
@@ -184,38 +196,46 @@ module.exports = bot => {
     }
   }
 
-  async function removeFeedCommand(ctx, chat_id, getMessage) {
+  async function removeFeedCommand(ctx, finishedViewChatCmd) {
     const feedTitle = removeCommand(ctx.message.text, '/remove');
 
     if (!feedTitle) {
       ctx.telegram.sendMessage(getChatId(ctx), remove_feed.cmd_error, { parse_mode: 'HTML'});
       return;
     }
-    if (!(await feedRepository.existsFeedByTitle(feedTitle, chat_id))) {
+    if (!(await feedRepository.existsFeedByTitle(feedTitle, chatId))) {
       ctx.telegram.sendMessage(getChatId(ctx), remove_feed.invalid_title, { parse_mode: 'HTML'});
       return;
     }
 
-    await feedRepository.dropFeed(feedTitle, chat_id);
+    const userId = String(ctx.message.from.id);
+    const chatId = await chatRepository.getIsActiveConfigChat(userId);
+    await feedRepository.dropFeed(feedTitle, chatId);
 
     ctx.reply(remove_feed.success);
-    const message = await getMessage();
+    const message = await finishedViewChatCmd(ctx, chatId);
     ctx.telegram.sendMessage(...message);
 
     return;
   }
 
-  async function activeChatCommand(ctx, chat_id, getMessage) {
-    if (!(await feedRepository.containChat(chat_id))) {
+  async function activeChatCommand(ctx, finishedViewChatCmd) {
+    const userId = String(ctx.message.from.id);
+    const chatId = await chatRepository.getIsActiveConfigChat(userId);
+
+    if (!(await feedRepository.containChat(chatId))) {
       ctx.reply(active_feed.error);
       return;
     }
 
-    await chatRepository.updateActiveChat(true, chat_id);
+    await chatRepository.updateActiveChat(true, chatId);
+    await chatRepository.setActiveConfigChat(chatId, userId, false);
 
     ctx.reply(active_feed.success);
-    const message = await getMessage();
+    const message = await finishedViewChatCmd(ctx, chatId);
     ctx.telegram.sendMessage(...message);
+
+    return;
   }
 
   setupFeedActions({ bot });

@@ -34,7 +34,7 @@ async function listFeeds(feedRepository, chatID) {
   let feedsList = '<strong>Feeds 📌</strong>\n';
   if (feeds && feeds.length > 0) {
     feeds.forEach(feed => {
-      feedsList += `\n🔹 <i>${feed.title}</i>\n`
+      feedsList += `\n🔹 <code>${feed.title}</code>\n`
     })
   }
 
@@ -47,7 +47,7 @@ async function listChats(chatRepository, userID) {
   let chatsList = '<strong>Chats 📌</strong>\n';
   if (chats && chats.length > 0) {
     chats.forEach(chat => {
-      chatsList += `\n🔸 <i>${chat.title}</i>\n`;
+      chatsList += `\n🔸 <code>${chat.title}</code>\n`;
     })
   }
 
