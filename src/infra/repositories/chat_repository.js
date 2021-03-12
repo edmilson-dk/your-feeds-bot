@@ -90,11 +90,19 @@ class ChatRepository {
     return row[0].id;
   }
 
+  async setNotActiveConfigChats(user_id) {
+    await knex('chats')
+      .where({ user_id, is_active_configuration: true })
+      .update({ is_active_configuration: false })
+  }
+
   async setActiveConfigChat(chat_id, user_id, state) {
     await knex('chats')
       .where({ id: chat_id, user_id })
       .update({ is_active_configuration: state })
   }
+
+  
 }
 
 module.exports = ChatRepository;
