@@ -28,6 +28,8 @@ module.exports = bot => {
     const username = ctx.from.username;
 
     if (type === 'private') {
+      await chatRepository.setNotActiveConfigChats(String(userId));
+      
       const user = new User(userId, username);
       await userRepository.add(user.getValue());
 
