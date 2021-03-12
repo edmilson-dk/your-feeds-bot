@@ -42,8 +42,10 @@ module.exports = ({ bot }) => {
     ctx.answerCbQuery();
     ctx.deleteMessage();
    
-    const userID = getUserId(ctx, 'action');
-    const chatsList = await listChats(chatRepository, userID);
+    const userId = getUserId(ctx, 'action');
+    await chatRepository.setNotActiveConfigChats(String(userId));
+    
+    const chatsList = await listChats(chatRepository, userId);
     
     const defaultMarkup = [
       [{ text: manager_feeds.action_update_list, callback_data: 'manager_feeds'},
