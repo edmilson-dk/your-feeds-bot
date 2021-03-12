@@ -71,15 +71,29 @@ class ChatRepository {
   async getAllChatsIdActive() {
     const rows = await knex('chats')
       .select('id')
-      .where({ active: true })
+      .where({ is_active: true })
 
     return rows;
   }
 
-  async updateActiveChat(active, chat_id) {
+  async updateActiveChat(is_active, chat_id) {
     await knex('chats')
       .where({ id: chat_id })
-      .update({ active })
+      .update({ is_active })
+  }
+
+  async getIsActiveConfigChat(user_id) {
+    const row = await knex('chats')
+      .where({ is_active_configuration: true, user_id })
+      .select('id')
+
+    return row[0].id;
+  }
+
+  async setActiveConfigChat(chat_id, user_id, state) {
+    await knex('chats')
+      .where({ id: chat_id, user_id })
+      .update({ is_active_configuration: state })
   }
 }
 
