@@ -1,6 +1,6 @@
 const { start_service, home, cmd_error, not_member_admin, view_chat, add_feed, remove_feed, active_feed } = require('../messages/commands');
 const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
-const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
+const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeComma, getChatIdnd } = require('../helpers/bot_helpers');
 const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');
@@ -24,25 +24,27 @@ module.exports = bot => {
 
   bot.start(async ctx => {
     const { type } = await ctx.getChat();
-    const userID = ctx.from.id;
+    const userId = ctx.from.id;
     const username = ctx.from.username;
 
     if (type === 'private') {
-      await userRepository.add({ user_id: userID, username });
+      const user = new User(userId, username);
+      await userRepository.add(user.getValue());
 
       ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
+      return;
     } else {
       ctx.telegram.sendMessage(getChatId(ctx), 'Olá!'); 
+      return;
     }
-    return;
   })
 
  bot.command('start_service', async ctx => {
-    const { type, id: chatID, title } = await ctx.getChat();
-    const userID = ctx.from.id;
-    const isUserAdmin = await isAdmin(userID, ctx);
-    const isUserValid = await userRepository.existsUser(String(userID));
-    const chat = new Chat(chatID, title, userID);
+    const { type, id: chatId, title } = await ctx.getChat();
+    const userId = ctx.from.id;
+    const isUserAdmin = await isAdmin(userId, ctx);
+    const isUserValid = await userRepository.existsUser(String(userId));
+    const chat = new Chat(chatId, title, userId);
     
     if (type !== 'private') {
       if (!isUserValid) {
@@ -57,7 +59,7 @@ module.exports = bot => {
         ctx.reply(start_service.not_admin);
         return;
       }
-      if ((await chatRepository.existsChat(chatID))) {
+      if ((await chatRepository.existsChat(chatId))) {
         ctx.reply(start_service.chat_alredy_exists);
         return;
       } 
@@ -81,14 +83,14 @@ module.exports = bot => {
       return exists;
     });
 
-    const userID = userActiveSessionId.length > 0 
+    const userId = userActiveSessionId.length > 0 
       ? userActiveSessionId[0].user.id
       : undefined;
       
-    const { id: chatID, title } = await ctx.getChat();
+    const { id: chatId, title } = await ctx.getChat();
     let chat = null;
     
-    if (userID) chat = new Chat(chatID, title, userID);
+    if (userId) chat = new Chat(chatId, title, userId);
 
     if (text === '/start_service') {
       if ((await isBotAdmin(ctx)) && chat) {
@@ -97,7 +99,7 @@ module.exports = bot => {
 
         return;
       }
-      if ((await chatRepository.existsChat(chatID))) {
+      if ((await chatRepository.existsChat(chatId))) {
         ctx.reply(start_service.chat_alredy_exists);
         return;
       } 
@@ -107,38 +109,38 @@ module.exports = bot => {
   })
 
   bot.command('view_chat', async ctx => {
-    const chatTitle = ctx.message.text.replace('/view_chat', '').trim();
+    const chatTitle = removeCommand(ctx.message.text,'/view_chat');
    
     if (!chatTitle) {
       ctx.reply(cmd_error.text);
       return;
     }
 
-    const userID = ctx.message.from.id;
-    const { id: chatID } = await chatRepository.getOneChatByTitle(String(userID), chatTitle);
+    const userId = ctx.message.from.id;
+    const { id: chatId } = await chatRepository.getOneChatByTitle(String(userId), chatTitle);
     
-    const getMessage = async () => {
-      const feedsList = await listFeeds(feedRepository, chatID);
+    const getMessage = async (ctxMsg, chatCmdId) => {
+      const feedsList = await listFeeds(feedRepository, chatCmdId);
       
       return [
-        getChatId(ctx), 
+        getChatId(ctxMsg), 
         `${view_chat.text}\n\n${feedsList}`, 
         goBackManagerFeedsMarkup
       ];
     }
 
-    if ((await isStillMemberAndAdmin(chatID, userID, { bot }))) {   
+    if ((await isStillMemberAndAdmin(chatId, userId, { bot }))) {   
       
-      const message = await getMessage();
+      const message = await getMessage(ctx, chatId);
       ctx.telegram.sendMessage(...message);
 
-      bot.command('add', async ctx => await addFeedCommand(ctx, chatID, getMessage));
-      bot.command('remove', async ctx => await removeFeedCommand(ctx, chatID, getMessage));
-      bot.command('active', async ctx => await activeChatCommand(ctx, chatID, getMessage));
+      bot.command('add', async ctxAddCmd => await addFeedCommand(ctxAddCmd, chatId, getMessage));
+      bot.command('remove', async ctxRemoveCmd => await removeFeedCommand(ctxRemoveCmd, chatId, getMessage));
+      bot.command('active', async ctxActiveCmd => await activeChatCommand(ctxActiveCmd, chatId, getMessage));
 
     } else {
-      ctx.telegram.sendMessage(chatID, not_member_admin.text, isNotMemberOrAdminMarkup);
-      await chatRepository.dropChat(userID, chatID);
+      ctx.telegram.sendMessage(chatId, not_member_admin.text, isNotMemberOrAdminMarkup);
+      await chatRepository.dropChat(userId, chatId);
 
       return;
     }
@@ -174,7 +176,7 @@ module.exports = bot => {
       await feedRepository.addFeed(feed.getValue());
 
       ctx.reply(add_feed.success);
-      const message = await getMessage();
+      const message = await getMessage(ctx, chat_id);
       ctx.telegram.sendMessage(...message);
 
       return;
@@ -199,7 +201,7 @@ module.exports = bot => {
     await feedRepository.dropFeed(feedTitle, chat_id);
 
     ctx.reply(remove_feed.success);
-    const message = await getMessage();
+    const message = await getMessage(ctx, chat_id);
     ctx.telegram.sendMessage(...message);
 
     return;
@@ -214,7 +216,7 @@ module.exports = bot => {
     await chatRepository.updateActiveChat(true, chat_id);
 
     ctx.reply(active_feed.success);
-    const message = await getMessage();
+    const message = await getMessage(ctx, chat_id);
     ctx.telegram.sendMessage(...message);
   }
 
