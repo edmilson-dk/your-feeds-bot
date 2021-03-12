@@ -9,8 +9,7 @@ class RssParser {
 
   async getFeeds(rssURL) {
     try {
-      const feeds = await parser.parseURL(rssURL);
-      
+      const feeds = await parser.parseURL(rssURL);   
       return feeds.items;
     } catch (err) {
       return [];
@@ -22,7 +21,6 @@ class RssParser {
       await parser.parseURL(rssURL);
       return true;
     } catch (err) {
-      console.log(err)
       return false;
     }
   }
