@@ -1,6 +1,6 @@
 const { start_service, home, cmd_error, not_member_admin, view_chat, add_feed, remove_feed, active_feed } = require('../messages/commands');
-const { homeMarkup, timezonesMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
-const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeComma, getChatIdnd } = require('../helpers/bot_helpers');
+const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
+const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
 const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
 
 const User = require('../domain/User');

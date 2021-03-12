@@ -6,7 +6,7 @@
     },
     "about": {
       "text": "Sobre ❔",
-      "meesage": "<strong>Como funciono?</strong>\n\n<i>Olá! talvez você esteja com dúvidas sobre meu funcionamento, então vou explicar o que faço.\n\nSou um bot aqui do telegram, meu objetivo é ajudar em seus chats, enviando feeds de notícias autmaticamente, bastando apenas que você faça simples configurações e alguns passos, para tudo funcionar, meus serviços são baseados em serviços de feeds RSS, que são grandes arquivos com notícias ou postagens de algum site de sua preferência, pego esses arquivos de texto, e envio uma prévia em seu chat, para facilitar o acesso a notícias do mundo inteiro, em seu grupo ou canal. Para mais informações e ajuda, entre em meu grupo oficial de suporte aqui no telegram, clicando no botão abaixo.</i>"
+      "message": "<strong>Como funciono?</strong>\n\n<i>Olá! talvez você esteja com dúvidas sobre meu funcionamento, então vou explicar o que faço.\n\nSou um bot aqui do telegram, meu objetivo é ajudar em seus chats, enviando feeds de notícias autmaticamente, bastando apenas que você faça simples configurações e alguns passos, para tudo funcionar, meus serviços são baseados em serviços de feeds RSS, que são grandes arquivos com notícias ou postagens de algum site de sua preferência, pego esses arquivos de texto, e envio uma prévia em seu chat, para facilitar o acesso a notícias do mundo inteiro, em seu grupo ou canal. Para mais informações e ajuda, entre em meu grupo oficial de suporte aqui no telegram, clicando no botão abaixo.</i>"
     },
     "manager_feeds": {
       "text": "⚙ Gerenciar seus chats",

@@ -17,10 +17,12 @@ module.exports = ({ bot }) => {
   }) 
 
   function aboutAndHelpMessage(ctx, message) {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
     ctx.telegram.sendMessage(getChatId(ctx), message, {
       reply_markup: {
         inline_keyboard: [
-          [{ tetx: 'Acessar meu grupo', url: process.env.BOT_CHAT }],
+          [{ text: 'Acessar meu grupo', url: process.env.BOT_CHAT }],
           [{ text: go_back_btn.text, callback_data: 'start_bot' }]
         ]
       },
