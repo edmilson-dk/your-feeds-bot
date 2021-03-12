@@ -20,6 +20,12 @@ class PostRepository {
 
     return count[0];
   }
+
+
+  async dropAllPosts() {
+    await knex('posts')
+      .del();
+  }
 }
 
 module.exports = PostRepository;
