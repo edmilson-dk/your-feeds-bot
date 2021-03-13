@@ -2,7 +2,7 @@
   "start_bot_keyboard": {
     "help": {
       "text": "Ajuda 🆘",
-      "message": "<strong>Por que existo?</strong>\n\n<code>Olá! sou um bot, criado especialmente para lhe auxiliar em seus grupos ou canais do telegram, tenho a grande missão, de deixar seu grupo sempre antenado com os feeds de notícias que mais lhe interessa, faço tudo automaticamente, bastando apenas que você faça simples configurações em meu sistema, e pronto, seu grupo receberá notícias 24 horas por dia ⏱, para mais informações entre em meu grupo oficial no botão abaixo, para tirar dúvdas, e informar possíveis problemas ou trazer dicas para melhorar nossos serviços de feed.</code>"
+      "message": "<strong>Por que existo?</strong>\n\n<i>Olá! sou um bot, criado especialmente para lhe auxiliar em seus grupos ou canais do telegram, tenho a grande missão, de deixar seu grupo sempre antenado com os feeds de notícias que mais lhe interessa, faço tudo automaticamente, bastando apenas que você faça simples configurações em meu sistema, e pronto, seu grupo receberá notícias 24 horas por dia ⏱, para mais informações entre em meu grupo oficial no botão abaixo, para tirar dúvdas, e informar possíveis problemas ou trazer dicas para melhorar nossos serviços de feed.</i>"
     },
     "about": {
       "text": "Sobre ❔",
