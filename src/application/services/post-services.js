@@ -1,7 +1,7 @@
-const PostUseCaseRepository = require("../../domain/use-cases/post-usecase-interface");
+const PostUseCaseInterface = require("../../domain/use-cases/post-usecase-interface");
 const { formatToString } = require("../../helpers/features_helpers");
 
-class PostServices extends PostUseCaseRepository {
+class PostServices extends PostUseCaseInterface {
   constructor({ postRepository }) {
     this._postRepository = postRepository;
 
