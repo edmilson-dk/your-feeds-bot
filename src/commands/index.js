@@ -3,9 +3,9 @@ const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = requi
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
 const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
 
-const User = require('../domain/User');
-const Feed = require('../domain/Feed');
-const Chat = require('../domain/Chat');
+const User = require('../domain/entities/User');
+const Feed = require('../domain/entities/Feed');
+const Chat = require('../domain/entities/Chat');
 
 const RssParser = require('../drivers/rss-parser');
 
@@ -31,7 +31,7 @@ module.exports = bot => {
       await chatRepository.setNotActiveConfigChats(String(userId));
       
       const user = new User(userId, username);
-      await userRepository.add(user.getValue());
+      await userRepository.add(user.getValues());
 
       ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
       return;
@@ -116,7 +116,7 @@ module.exports = bot => {
     return;
   })
 
-  async function finishedViewChatCmd(ctx, chatId, reset = false) {
+  async function finishedViewChatCmd(ctx, chatId) {
     const feedsList = await listFeeds(feedRepository, chatId);
     const userId = String(ctx.message.from.id);
 
@@ -183,7 +183,7 @@ module.exports = bot => {
       }
 
       const feed = new Feed(rssURL, hashtags_formatted, title, chatId);
-      await feedRepository.addFeed(feed.getValue());
+      await feedRepository.addFeed(feed.getValues());
 
       ctx.reply(add_feed.success);
       const message = await finishedViewChatCmd(ctx, chatId);
