@@ -100,9 +100,7 @@ class ChatRepository {
     await knex('chats')
       .where({ id: chat_id, user_id })
       .update({ is_active_configuration: state })
-  }
-
-  
+  }  
 }
 
 module.exports = ChatRepository;
