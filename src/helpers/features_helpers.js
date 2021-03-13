@@ -54,6 +54,15 @@ async function listChats(chatRepository, userID) {
   return chatsList;
 }
 
+function formatToString(fields) {
+  if (typeof fields !== 'object') return;
+
+  fields.map(item => {
+    if (typeof item !== 'string') return String(item);
+    return item;
+  })
+}
+
 module.exports = {
   asyncFilter,
   isHashtagsValid,
@@ -61,4 +70,5 @@ module.exports = {
   removeNotHashtagsInArray,
   listFeeds,
   listChats,
+  formatToString
 }
