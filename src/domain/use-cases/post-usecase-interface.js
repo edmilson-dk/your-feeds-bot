@@ -1,4 +1,4 @@
-class PostUseCaseRepository {
+class PostUseCaseInterface {
   addPost({ title, chatId }) {
     throw new Error('Not implemented method');
   }
@@ -16,4 +16,4 @@ class PostUseCaseRepository {
   }
 }
 
-module.exports = PostUseCaseRepository;
+module.exports = PostUseCaseInterface;
