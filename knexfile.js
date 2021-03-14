@@ -21,13 +21,12 @@ module.exports = {
   },
   production: {
     client: process.env.DB_CLIENT,
-    connection: process.env.DB_CONNECTION,/*{
+    connection: {
       host: process.env.DB_HOST,
       database: process.env.DATABASE,
       user: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-    }*/
-    ssl: { rejectUnauthorized: false },
+    },
     pool: {
       min: 2,
       max: 10
