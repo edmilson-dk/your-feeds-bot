@@ -199,6 +199,9 @@ module.exports = bot => {
   async function removeFeedCommand(ctx, finishedViewChatCmd) {
     const feedTitle = removeCommand(ctx.message.text, '/remove');
 
+    const userId = String(ctx.message.from.id);
+    const chatId = await chatRepository.getIsActiveConfigChat(userId);
+
     if (!feedTitle) {
       ctx.telegram.sendMessage(getChatId(ctx), remove_feed.cmd_error, { parse_mode: 'HTML'});
       return;
@@ -208,8 +211,6 @@ module.exports = bot => {
       return;
     }
 
-    const userId = String(ctx.message.from.id);
-    const chatId = await chatRepository.getIsActiveConfigChat(userId);
     await feedRepository.dropFeed(feedTitle, chatId);
 
     ctx.reply(remove_feed.success);
