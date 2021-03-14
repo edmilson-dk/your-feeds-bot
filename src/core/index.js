@@ -58,8 +58,8 @@ function sendMessages({ feed, data, bot }) {
 }
 
 function isUTCMidNight() {
-  const utcHours = time.getUTCHours() === 00;
-  const utcMinutes = time.getUTCMinutes() === 00;
+  const utcHours = time.getUTCHours() === 0;
+  const utcMinutes = time.getUTCMinutes() <= 1;
   const utcSeconds = time.getUTCSeconds() <= 58;
 
   return (utcHours && utcMinutes && utcSeconds) ? true : false;
@@ -73,7 +73,7 @@ async function start(bot) {
   
   data.forEach(async feed => {
     const { count } = await postRepository.getPostsCount({ chat_id: feed.chat_id});
-
+   
     feed.data.splice(0, count);
     const items = feed.data.slice(0, process.env.BOT_COUNT_POSTS);
 
