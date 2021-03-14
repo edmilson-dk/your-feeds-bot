@@ -5,7 +5,6 @@ module.exports = {
   development: {
     client: process.env.DB_CLIENT,
     connection: {
-      host: process.env.DATABASE_HOST,
       database: process.env.DATABASE,
       user: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
