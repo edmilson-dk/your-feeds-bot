@@ -1,5 +1,9 @@
 require('dotenv').config();
 
+const pg = require('pg');
+pg.defaults.ssl = {
+  rejectUnauthorized: false,
+};
 
 module.exports = {
   development: {
@@ -21,12 +25,7 @@ module.exports = {
   },
   production: {
     client: process.env.DB_CLIENT,
-    connection: {
-      host: process.env.DB_HOST,
-      database: process.env.DATABASE,
-      user: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-    },
+    connection: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
     pool: {
       min: 2,
