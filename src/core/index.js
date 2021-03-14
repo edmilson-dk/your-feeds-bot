@@ -52,7 +52,7 @@ function sendMessages({ feed, data, bot }) {
         bot.telegram.sendMessage(feed.chat_id, 
           `<strong>Novo post ✅</strong><code>\n\n${item.title}</code>\n\n<a href='${item.link}'>Ler post completo ➡️</a>\n\nDe: <i>${feed.title}</i>\n\n${feed.hashtags}`, 
           { parse_mode: 'HTML'})
-      }, index * 60000);
+      }, index * process.env.BOT_INTERVAL_SEND_POSTS);
     }
   });
 }
@@ -75,7 +75,7 @@ async function start(bot) {
     const { count } = await postRepository.getPostsCount({ chat_id: feed.chat_id});
 
     feed.data.splice(0, count);
-    const items = feed.data.slice(0, 10);
+    const items = feed.data.slice(0, process.env.BOT_COUNT_POSTS);
 
     sendMessages({ feed, data: items, bot });
   });
@@ -83,7 +83,7 @@ async function start(bot) {
 
 async function main(bot) {
   await start(bot);
-  setInterval(async () => await start(bot), 600000);
+  setInterval(async () => await start(bot), process.env.BOT_INTERVAL_GET_POSTS);
 }
 
 module.exports = main;

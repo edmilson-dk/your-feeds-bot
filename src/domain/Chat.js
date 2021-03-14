@@ -1,9 +1,5 @@
 class Chat {
-  constructor(
-    id, 
-    title, 
-    user_id,
-    ) {
+  constructor( id, title, user_id ) {
     this.id = String(id);
     this.title = title;
     this.user_id = String(user_id);

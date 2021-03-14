@@ -73,7 +73,7 @@ module.exports = bot => {
       } 
   
       await chatRepository.addChat(chat.getValues());
-      ctx.reply(start_service.success);  
+      ctx.reply(start_service.success); 
   
       return;
     }
