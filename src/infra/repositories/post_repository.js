@@ -25,6 +25,8 @@ class PostRepository {
   async dropAllPosts() {
     await knex('posts')
       .del();
+    
+    return;
   }
 }
 

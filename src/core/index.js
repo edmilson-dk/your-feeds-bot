@@ -58,8 +58,8 @@ function sendMessages({ feed, data, bot }) {
 }
 
 function isUTCMidNight() {
-  const utcHours = time.getUTCHours() === 0;
-  const utcMinutes = time.getUTCMinutes() <= 1;
+  const utcHours = time.getUTCHours() === 9;
+  const utcMinutes = time.getUTCMinutes() <= 58;
   const utcSeconds = time.getUTCSeconds() <= 58;
 
   return (utcHours && utcMinutes && utcSeconds) ? true : false;
@@ -67,7 +67,7 @@ function isUTCMidNight() {
 
 async function start(bot) {
   const data = await getChatsData();
-
+  
   if (isUTCMidNight()) await postRepository.dropAllPosts();
   if (data.length === 0) return data;
   
