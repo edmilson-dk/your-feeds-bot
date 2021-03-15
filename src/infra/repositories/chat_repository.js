@@ -90,6 +90,13 @@ class ChatRepository {
     return row[0].id;
   }
 
+  async containsActiveChatConfig(user_id) {
+    const contains = await knex('chats')
+      .where({ is_active_configuration: true, user_id });
+     
+    return contains.length > 0 ? true : false;
+  }
+
   async setNotActiveConfigChats(user_id) {
     await knex('chats')
       .where({ user_id, is_active_configuration: true })
