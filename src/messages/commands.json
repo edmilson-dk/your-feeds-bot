@@ -36,5 +36,8 @@
   "active_feed": {
     "error": "⚠️ Este chat ainda não está completamente configurado, você precisa adicionar algum feed, para poder ativar as postagens.",
     "success": "✅ Em alguns minutos seu chat já começarar a receber postagens"
-  } 
+  },
+  "command_error": {
+    "message": "⚠️ Por favor envie o comando /start e tente novamente."
+  }
 }
