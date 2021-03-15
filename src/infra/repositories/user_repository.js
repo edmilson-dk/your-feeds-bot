@@ -30,7 +30,6 @@ class UserRepository {
 
   async getUser(user_id) {
     const row = await knex('users')
-      .select()
       .where({ id: user_id });
 
     return row;
