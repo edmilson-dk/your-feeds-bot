@@ -128,11 +128,6 @@ module.exports = bot => {
 
   async function viewChatCommand(ctx) {
     const userId = String(ctx.message.from.id);
-
-    if (!(await validateCommand(userId))) {
-      ctx.reply(command_error.message);
-      return;
-    }
     const chatTitle = removeCommand(ctx.message.text,'/view_chat');
    
     if (!chatTitle) {
