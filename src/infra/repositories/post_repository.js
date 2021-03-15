@@ -21,11 +21,11 @@ class PostRepository {
     return count[0];
   }
 
-
   async dropAllPosts() {
     await knex('posts')
-      .del();
-    
+      .where(knex.raw(`created_at <= NOW() - '1 day'::INTERVAL`))
+      .del()
+  
     return;
   }
 }
