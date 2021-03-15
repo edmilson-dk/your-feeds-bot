@@ -1,4 +1,5 @@
 const RssParser = require('../drivers/rss-parser');
+const { strToHex } = require('../helpers/features_helpers');
 
 const ChatRepository = require('../infra/repositories/chat_repository');
 const FeedRepository = require('../infra/repositories/feed_repository');
@@ -27,7 +28,13 @@ async function getChatsData() {
 
   async function fetchData(feed) {
     const items = await rssParser.getFeeds(feed.rss_url);
-    return { data: items, chat_id: feed.chat_id, title: feed.title, hashtags: feed.hashtag };
+    
+    return { 
+      data: items, 
+      chat_id: feed.chat_id, 
+      title: feed.title, 
+      hashtags: feed.hashtag 
+    };
   }
   
   const items = data.map(feed => {
@@ -41,9 +48,11 @@ async function getChatsData() {
   return feeds;
 }
 
-function sendMessages({ feed, data, bot }) {
+function sendFeedPosts({ feed, data, bot }) {
   data.forEach(async (item, index) => {
-    const defaultObject = { title: item.title, chat_id: feed.chat_id };
+    const defaultObject = { 
+      title: item.title.split(' ').join(''), 
+      chat_id: feed.chat_id };
     
     if (!(await postRepository.existsPost(defaultObject))) {
       await postRepository.addPost(defaultObject);
@@ -57,27 +66,15 @@ function sendMessages({ feed, data, bot }) {
   });
 }
 
-function isUTCMidNight() {
-  const utcHours = time.getUTCHours() === 0;
-  const utcMinutes = time.getUTCMinutes() <= 58;
-  const utcSeconds = time.getUTCSeconds() <= 58;
-
-  return (utcHours && utcMinutes && utcSeconds) ? true : false;
-}
-
 async function start(bot) {
   const data = await getChatsData();
-  
-  if (isUTCMidNight()) await postRepository.dropAllPosts();
+
+  await postRepository.dropAllPosts();
+
   if (data.length === 0) return data;
   
-  data.forEach(async feed => {
-    const { count } = await postRepository.getPostsCount({ chat_id: feed.chat_id});
-   
-    feed.data.splice(0, count);
-    const items = feed.data.slice(0, process.env.BOT_COUNT_POSTS);
-
-    sendMessages({ feed, data: items, bot });
+  data.forEach(feed => {
+    sendFeedPosts({ feed, data: feed.data, bot });
   });
 }
 
