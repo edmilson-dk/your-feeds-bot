@@ -1,4 +1,4 @@
-const { start_service, home, cmd_error, not_member_admin, view_chat, add_feed, remove_feed, active_feed } = require('../messages/commands');
+const { start_service, home, cmd_error, not_member_admin, view_chat, add_feed, remove_feed, active_feed, command_error } = require('../messages/commands');
 const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../markups');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../helpers/bot_helpers');
 const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../helpers/features_helpers');
@@ -118,8 +118,7 @@ module.exports = bot => {
 
   async function finishedViewChatCmd(ctx, chatId, reset = false) {
     const feedsList = await listFeeds(feedRepository, chatId);
-    const userId = String(ctx.message.from.id);
-
+  
     return [
       getChatId(ctx), 
       `${view_chat.text}\n\n${feedsList}`, 
@@ -128,6 +127,12 @@ module.exports = bot => {
   }
 
   async function viewChatCommand(ctx) {
+    const userId = String(ctx.message.from.id);
+
+    if (!(await validateCommand(userId))) {
+      ctx.reply(command_error.message);
+      return;
+    }
     const chatTitle = removeCommand(ctx.message.text,'/view_chat');
    
     if (!chatTitle) {
@@ -135,7 +140,6 @@ module.exports = bot => {
       return;
     }
 
-    const userId = String(ctx.message.from.id);
     const { id: chatId } = await chatRepository.getOneChatByTitle(String(userId), chatTitle);
 
     if ((await isStillMemberAndAdmin(chatId, userId, { bot }))) {   
@@ -154,6 +158,13 @@ module.exports = bot => {
   }
 
   async function addFeedCommand(ctx, finishedViewChatCmd) {
+    const userId = String(ctx.message.from.id);
+
+    if (!(await validateCommand(userId))) {
+      ctx.reply(command_error.message);
+      return;
+    }
+
     let data = removeCommand(ctx.message.text, '/add').split(' ');
     data = removeSpacesInArray(data);
 
@@ -171,8 +182,6 @@ module.exports = bot => {
     } 
     
     if ((await rssParser.rssIsValid(rssURL))) {
-      const userId = String(ctx.message.from.id);
-
       const title = await rssParser.getFeedTitle(rssURL);
       const hashtags_formatted = hashtags.join(' ');
       const chatId = await chatRepository.getIsActiveConfigChat(userId);
@@ -197,9 +206,15 @@ module.exports = bot => {
   }
 
   async function removeFeedCommand(ctx, finishedViewChatCmd) {
+    const userId = String(ctx.message.from.id);
+
+    if (!(await validateCommand(userId))) {
+      ctx.reply(command_error.message);
+      return;
+    }
+
     const feedTitle = removeCommand(ctx.message.text, '/remove');
 
-    const userId = String(ctx.message.from.id);
     const chatId = await chatRepository.getIsActiveConfigChat(userId);
 
     if (!feedTitle) {
@@ -220,8 +235,24 @@ module.exports = bot => {
     return;
   }
 
+  async function validateCommand(userId) {
+    const existsUser = await userRepository.existsUser(userId);
+    const existsChat = await chatRepository.containsActiveChatConfig(userId);
+
+    if (!existsUser) return false;
+    if (!existsChat) return false;
+
+    return true;
+  }
+
   async function activeChatCommand(ctx, finishedViewChatCmd) {
     const userId = String(ctx.message.from.id);
+
+    if (!(await validateCommand(userId))) {
+      ctx.reply(command_error.message);
+      return;
+    }
+
     const chatId = await chatRepository.getIsActiveConfigChat(userId);
 
     if (!(await feedRepository.containChat(chatId))) {
