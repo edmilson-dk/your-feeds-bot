@@ -58,7 +58,7 @@ function sendMessages({ feed, data, bot }) {
 }
 
 function isUTCMidNight() {
-  const utcHours = time.getUTCHours() === 9;
+  const utcHours = time.getUTCHours() === 0;
   const utcMinutes = time.getUTCMinutes() <= 58;
   const utcSeconds = time.getUTCSeconds() <= 58;
 
