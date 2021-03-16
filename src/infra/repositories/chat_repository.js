@@ -35,8 +35,9 @@ class ChatRepository {
   async getOneChatByTitle(user_id, chat_title) {
     const row = await knex('chats')
       .where({ title: chat_title, user_id })
-
-    return row[0];
+    
+    
+    return row.length > 0 ? row[0] : [];
   }
 
   async existsChat(chat_id) {
@@ -108,8 +109,6 @@ class ChatRepository {
       .where({ id: chat_id, user_id })
       .update({ is_active_configuration: state })
   }
-
-  
 }
 
 module.exports = ChatRepository;

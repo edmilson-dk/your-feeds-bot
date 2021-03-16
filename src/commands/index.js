@@ -135,7 +135,14 @@ module.exports = bot => {
       return;
     }
 
-    const { id: chatId } = await chatRepository.getOneChatByTitle(String(userId), chatTitle);
+    const chat = await chatRepository.getOneChatByTitle(String(userId), chatTitle);
+
+    if (chat.length === 0) {
+      ctx.reply('⚠️ Este chat não existe em sua lista, digite o titúlo conforme está escrito na listagem acima.');
+      return;
+    }
+
+    const { id: chatId } = chat;
 
     if ((await isStillMemberAndAdmin(chatId, userId, { bot }))) {   
       await chatRepository.setActiveConfigChat(chatId, userId, true);
