@@ -1,19 +1,19 @@
 class Feed {
-  constructor(rss_url, hashtag, title, chat_id) {
-    this.rss_url = rss_url;
+  constructor(rssUrl, hashtag, title, chatId) {
+    this.rssUrl = rssUrl;
     this.hashtag = hashtag;
     this.title = title;
-    this.chat_id = chat_id;
+    this.chatId = chatId;
 
     Object.freeze(this);
   }
 
   getValues() {
     return {
-      rss_url: this.rss_url,
+      rssUrl: this.rssUrl,
       hashtag: this.hashtag,
       title: this.title,
-      chat_id: this.chat_id,
+      chatId: this.chatId,
     }
   }
 }

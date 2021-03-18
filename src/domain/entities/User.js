@@ -1,6 +1,6 @@
 class User {
-  constructor(user_id, username) {
-    this.user_id = String(user_id);
+  constructor(userId, username) {
+    this.userId = userId;
     this.username = username;
 
     Object.freeze(this);
@@ -8,7 +8,7 @@ class User {
 
   getValues() {
     return {
-      user_id: this.user_id,
+      userId: this.userId,
       username: this.username,
     }
   }

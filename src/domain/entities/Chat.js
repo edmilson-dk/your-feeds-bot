@@ -1,8 +1,8 @@
 class Chat {
-  constructor( id, title, user_id ) {
-    this.id = String(id);
+  constructor(id, title, userId) {
+    this.id = id;
     this.title = title;
-    this.user_id = String(user_id);
+    this.userId = userId;
 
     Object.freeze(this);
   }
@@ -11,7 +11,7 @@ class Chat {
     return {
       id: this.id,
       title: this.title,
-      user_id: this.user_id
+      userId: this.userId
     }
   }
 }
