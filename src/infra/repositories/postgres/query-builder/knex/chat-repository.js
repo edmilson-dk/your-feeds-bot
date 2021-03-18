@@ -22,7 +22,7 @@ class ChatRepository extends ChatRepositoryInterface {
     const row = await knex('chats')
       .where({ id: chatId, user_id: userId })
 
-    return row;
+    return row.length > 0 ? row[0] : [];
   }
 
   async getUserChatByTitle({ userId, chatTitle }) {
@@ -48,7 +48,7 @@ class ChatRepository extends ChatRepositoryInterface {
 
   async dropChat({ userId, chatId }) {
     await knex('chats')
-      .where({ id: chatId, userId })
+      .where({ id: chatId, user_id: userId })
       .del();
 
   return;
@@ -78,9 +78,16 @@ class ChatRepository extends ChatRepositoryInterface {
     return;
   }
 
-  async getIsActiveConfigChat({ chatId }) {
+  async containsActiveChatConfig({ userId }) {
+    const contains = await knex('chats')
+      .where({ is_active_configuration: true, user_id: userId });
+     
+    return contains.length > 0 ? true : false;
+  }
+
+  async getIsActiveConfigChat({ userId }) {
     const row = await knex('chats')
-      .where({ is_active_configuration: true, user_id })
+      .where({ is_active_configuration: true, user_id: userId })
       .select('id');
 
     return row[0].id;
