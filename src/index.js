@@ -1,14 +1,18 @@
 require('dotenv').config();
 
-const { Telegraf } = require('telegraf');
+const Bot = require('./drivers/bot');
+const createBot = require('./drivers/telegraf-bot/telegraf-api');
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const Core = require('./core');
+const Commands = require('./commands');
 
-const init = require('./core');
-const commands = require('./commands');
+const bot = new Bot({
+  token: process.env.BOT_TOKEN,
+  createBot: createBot,
+}).init();
 
-commands(bot);
-setTimeout(async () => await init(bot), 0);
+new Core({ bot }).init();
+new Commands({ bot }).init();
 
 bot.launch();
 process.once('SIGINT', () => bot.stop('SIGINT'));
