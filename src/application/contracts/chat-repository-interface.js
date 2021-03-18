@@ -11,6 +11,10 @@ class ChatRepositoryInterface {
     throw new Error('Not implemented method');
   }
 
+  containsActiveChatConfig({ userId }) {
+    throw new Error('Not implemented method');
+  }
+
   getUserChatByTitle({ userId, chatTitle }) {
     throw new Error('Not implemented method');
   }
