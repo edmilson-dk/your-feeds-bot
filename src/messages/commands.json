@@ -6,7 +6,7 @@
     "text": "Nosso sistema funciona através de serviços de feed RSS, se você não souber como funciona, fique ciente do que se trata <a href='https://rockcontent.com/br/blog/o-que-e-feed-rss/'>aqui ➡️</a>.\n\n<strong>Escolha uma opção abaixo ✅</strong>"
   }, 
   "cmd_error": {
-    "text": "Por favor, digite o comando corretente ⚠️"
+    "text": "Por favor, digite o comando corretamente⚠️"
   },
   "start_service": {
     "invalid_user": "Usuário inválido ❌",
@@ -29,12 +29,18 @@
     "max_hashtags": "⚠️ Você deve enviar no máximo 3 hashtags."
   },
   "remove_feed": {
-    "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /remove deve possuir a seguinte estrutura:\n\n/remove <i>titúlo</i>.",
+    "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /remove deve possuir a seguinte estrutura:\n\n/remove <i>titúlo_do_feed</i>.",
     "invalid_title": "<strong>❌ Feed com este titúlo não encontrado.</strong>\n\nRevise o valor passado no comando /remove.",
     "success": "Feed removido com sucesso ✅"
   },
   "active_feed": {
     "error": "⚠️ Este chat ainda não está completamente configurado, você precisa adicionar algum feed, para poder ativar as postagens.",
     "success": "✅ Em alguns minutos seu chat já começarar a receber postagens"
-  } 
+  },
+  "command_error": {
+    "message": "⚠️ Por favor envie o comando /start e tente novamente."
+  },
+  "not_found_chat": {
+    "message": "⚠️ Este chat não existe em sua lista, digite o titúlo conforme está escrito na listagem acima."
+  }
 }
