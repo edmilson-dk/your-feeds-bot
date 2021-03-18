@@ -14,7 +14,7 @@ const bot = new Bot({
 const core = new Core({ bot }).init();
 const commands = new Commands({ bot })
 
-(async => {
+(async () => {
   commands.init();
   await core.init();
 })();
