@@ -26,6 +26,7 @@ class PostRepository extends PostRepositoryInterface {
 
   async dropAllPosts() {
     await knex('posts')
+      .where(knex.raw(`created_at <= NOW() - '1 day'::INTERVAL`))
       .del();
 
     return;
