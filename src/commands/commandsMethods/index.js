@@ -106,11 +106,11 @@ async function startServiceEvent(ctx) {
     : undefined;
     
   const { id: chatId, title } = await ctx.getChat();
-  let chat = false;
+  let chat = null;
   
   if (userId) chat = { id: chatId, title, userId };
-
-  if (text === '/start_service') {
+  
+  if (text === '/start_service') { 
     if ((await isBotAdmin(ctx)) && chat) {
       await chatServices.addChat(chat);
       ctx.reply(start_service.success);  

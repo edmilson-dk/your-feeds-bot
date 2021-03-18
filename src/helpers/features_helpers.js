@@ -1,7 +1,7 @@
 async function asyncFilter(array, cb) {
   const results = await Promise.all(array.map(cb));
 
-  return array.filter(index => results[index]);
+  return array.filter((_, index) => results[index]);
 }
 
 function isHashtagsValid(hashtags) {
