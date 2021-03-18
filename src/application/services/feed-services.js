@@ -1,21 +1,21 @@
+const Feed = require("../../domain/entities/Feed");
 const FeedUseCaseInterface = require("../../domain/use-cases/feed-usecase-interface");
 const { formatToString } = require("../../helpers/features_helpers");
 
 class FeedServices extends FeedUseCaseInterface {
   constructor({ feedRepository }) {
+    super();
+    
     this._feedRepository = feedRepository;
 
     Object.freeze(this);
   }
 
   async addFeed({ rssUrl, hashtag, title, chatId }) {
-    const [ titleFormatted, chaIdFormatted ] = formatToString([ title, chatId ]);
+    const [ chaIdFormatted ] = formatToString([ chatId ]);
+    const feed = new Feed(rssUrl, hashtag, title, chaIdFormatted);
 
-    await this._feedRepository.addFeed({
-      rssUrl,
-      hashtag,
-      title: titleFormatted,
-      chatId: chaIdFormatted });
+    await this._feedRepository.addFeed(feed.getValues());
 
     return;
   }

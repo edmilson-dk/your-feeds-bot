@@ -1,19 +1,21 @@
+const User = require("../../domain/entities/User");
 const UserUseCaseInterface = require("../../domain/use-cases/user-usecase-interface");
 const { formatToString } = require("../../helpers/features_helpers");
 
 class UserServices extends UserUseCaseInterface {
   constructor({ userRepository }) {
+    super();
+    
     this._userRepository = userRepository;
 
     Object.freeze(this);
   }
 
   async addUser({ userId, username }) {
-    const [ userIdFormatted, usernameFormatted ] = formatToString([ userId, username ]);
+    const [ userIdFormatted ] = formatToString([ userId ]);
+    const user = new User(userIdFormatted, username);
 
-    await this._userRepository.addUser({
-      userId: userIdFormatted,
-      username: usernameFormatted });
+    await this._userRepository.addUser(user.getValues());
 
     return;
   }

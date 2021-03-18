@@ -1,20 +1,21 @@
+const Chat = require("../../domain/entities/Chat");
 const ChatUseCaseInterface = require("../../domain/use-cases/chat-usecase-interface");
 const { formatToString } = require("../../helpers/features_helpers");
 
 class ChatServices extends ChatUseCaseInterface {
   constructor({ chatRepository }) {
+    super();
+
     this._chatRepository = chatRepository;
     
     Object.freeze(this);
   }
 
   async addChat({ id, title, userId }) {
-    const [idFormatted, titleFormatted, userIdFormatted] = formatToString([id, title, userId]);
+    const [idFormatted, userIdFormatted] = formatToString([id, userId]);
+    const chat = new Chat(idFormatted, title, userIdFormatted);
 
-    await this._chatRepository.addChat({ 
-      id: idFormatted, 
-      title: titleFormatted, 
-      userId: userIdFormatted });
+    await this._chatRepository.addChat(chat.getValues());
 
     return;
   }
@@ -40,7 +41,7 @@ class ChatServices extends ChatUseCaseInterface {
   async getUserChatByTitle({ userId, chatTitle }) {
     const [ userIdFormatted, chatTitleFormatted ] = formatToString([ userId, chatTitle ]);
 
-    const chat = await this._chatRepository.getOneChatByTitle({
+    const chat = await this._chatRepository.getUserChatByTitle({
       userId: userIdFormatted,
       chatTitle: chatTitleFormatted });
 
@@ -79,7 +80,7 @@ class ChatServices extends ChatUseCaseInterface {
   }
 
   async getAllChatsIdActive() {
-    const chats = await this.getAllChatsIdActive();
+    const chats = await this._chatRepository.getAllChatsIdActive();
     return chats;
   }
 
@@ -93,10 +94,18 @@ class ChatServices extends ChatUseCaseInterface {
     return;
   }
 
-  async getIsActiveConfigChat({ chatId }) {
-    const [ chatIdFormatted ] = formatToString([ chatId ]);
+  async containsActiveChatConfig({ userId }) {
+    const [ userIdFormatted ] = formatToString([ userId ]);
 
-    const chats = await this._chatRepository.getIsActiveConfigChat({ chatId: chatIdFormatted });
+    const activeChat = await this._chatRepository.containsActiveChatConfig({ userId: userIdFormatted });
+
+    return activeChat;
+  }
+
+  async getIsActiveConfigChat({ userId }) {
+    const [ userIdFormatted ] = formatToString([ userId ]);
+
+    const chats = await this._chatRepository.getIsActiveConfigChat({ userId: userIdFormatted });
 
     return chats;
   }
