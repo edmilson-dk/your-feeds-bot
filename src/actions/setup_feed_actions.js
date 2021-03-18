@@ -1,13 +1,12 @@
-const { home } = require('../messages/commands')
-const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard')
-const { getChatId, getUserId } = require('../helpers/bot_helpers')
+const { home } = require('../messages/commands');
+const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard');
+const { getChatId, getUserId } = require('../helpers/bot_helpers');
 const { homeMarkup } = require('../markups');
-const ChatRepository = require('../infra/repositories/chat_repository');
 const { listChats } = require('../helpers/features_helpers');
 
-const { manager_feeds, add_super_chat, about, help } = start_bot_keyboard;
+const chatServices = require('../infra/adapters/chat-adapter');
 
-const chatRepository = new ChatRepository();
+const { manager_feeds, add_super_chat, about, help } = start_bot_keyboard;
 
 module.exports = ({ bot }) => {
   bot.action('start_bot', ctx => {
@@ -19,6 +18,7 @@ module.exports = ({ bot }) => {
   function aboutAndHelpMessage(ctx, message) {
     ctx.answerCbQuery();
     ctx.deleteMessage();
+
     ctx.telegram.sendMessage(getChatId(ctx), message, {
       reply_markup: {
         inline_keyboard: [
@@ -27,7 +27,7 @@ module.exports = ({ bot }) => {
         ]
       },
       parse_mode: 'HTML'
-    })
+    });
   }
 
   bot.action('about', ctx => {
@@ -43,22 +43,23 @@ module.exports = ({ bot }) => {
     ctx.deleteMessage();
    
     const userId = getUserId(ctx, 'action');
-    await chatRepository.setNotActiveConfigChats(String(userId));
+    await chatServices.setNotActiveConfigChats({ userId });
+    const chats = await chatServices.getAllChatsOfUser({ userId });
     
-    const chatsList = await listChats(chatRepository, userId);
+    const chatsList = await listChats(chats);
     
     const defaultMarkup = [
       [{ text: manager_feeds.action_update_list, callback_data: 'manager_feeds'},
       { text: manager_feeds.action_super_chat, callback_data: 'action_super_chat'}],
       [{ text: go_back_btn.text, callback_data: 'start_bot' }],
-    ]
+    ];
 
     ctx.telegram.sendMessage(getChatId(ctx), `${manager_feeds.action_text}\n\n${chatsList}`, {
       reply_markup: {
         inline_keyboard: defaultMarkup, 
       },
       parse_mode: 'HTML'
-    })
+    });
   })
 
   bot.action('action_super_chat', ctx => {
@@ -71,6 +72,6 @@ module.exports = ({ bot }) => {
           [{ text: go_back_btn.text, callback_data: 'manager_feeds' }]
         ]
       }
-    })
+    });
   })
 }
