@@ -1,4 +1,5 @@
 class ChatUseCaseInterface {
+
   addChat({ id, title, userId }) {
     throw new Error('Not implemented method');
   }
@@ -36,6 +37,10 @@ class ChatUseCaseInterface {
   }
 
   updateActiveChat({ isActive, chatId }) {
+    throw new Error('Not implemented method');
+  }
+
+  containsActiveChatConfig({ userId }) {
     throw new Error('Not implemented method');
   }
 
