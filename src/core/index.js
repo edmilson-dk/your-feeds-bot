@@ -1,33 +1,34 @@
 const RssParser = require('../drivers/rss-parser');
 
-const ChatRepository = require('../infra/repositories/chat_repository');
-const FeedRepository = require('../infra/repositories/feed_repository');
-const PostRepository = require('../infra/repositories/post_repository');
-
-const chatRepository = new ChatRepository();
-const feedRepository = new FeedRepository();
-const postRepository = new PostRepository();
+const chatServices = require('../infra/adapters/chat-adapter');
+const feedServices = require('../infra/adapters/feed-adapter');
+const postServices = require('../infra/adapters/post-adapter');
 
 const rssParser = new RssParser();
-const time = new Date;
 
 async function getChatsData() {
-  const chatsIds = await chatRepository.getAllChatsIdActive();
+  const chatsIds = await chatServices.getAllChatsIdActive();
 
   if (chatsIds.length === 0) return chatsIds;
 
   const data = [];
 
   await Promise.all(chatsIds.map(async chat => {
-    const items = await feedRepository.getFeeds(chat.id);
+    const items = await feedServices.getFeeds({ chatId: chat.id });
     data.push(...items);
 
     return items;
-  }))
+  }));
 
   async function fetchData(feed) {
     const items = await rssParser.getFeeds(feed.rss_url);
-    return { data: items, chat_id: feed.chat_id, title: feed.title, hashtags: feed.hashtag };
+    
+    return { 
+      data: items, 
+      chat_id: feed.chat_id, 
+      title: feed.title, 
+      hashtags: feed.hashtag 
+    };
   }
   
   const items = data.map(feed => {
@@ -41,49 +42,58 @@ async function getChatsData() {
   return feeds;
 }
 
-function sendMessages({ feed, data, bot }) {
+function sendFeedPosts({ feed, data, bot }) {
   data.forEach(async (item, index) => {
-    const defaultObject = { title: item.title, chat_id: feed.chat_id };
+    const defaultObject = { 
+      title: item.title.split(' ').join(''), 
+      chatId: feed.chat_id };
     
-    if (!(await postRepository.existsPost(defaultObject))) {
-      await postRepository.addPost(defaultObject);
+    if (!(await postServices.existsPost(defaultObject))) {
+      await postServices.addPost(defaultObject);
       
       setTimeout(() => {
-        bot.telegram.sendMessage(feed.chat_id, 
-          `<strong>Novo post ✅</strong><code>\n\n${item.title}</code>\n\n<a href='${item.link}'>Ler post completo ➡️</a>\n\nDe: <i>${feed.title}</i>\n\n${feed.hashtags}`, 
-          { parse_mode: 'HTML'})
+        defaultPostTemplate(bot, {
+          chatId: feed.chat_id,
+          feedTitle: feed.title,
+          link: item.link,
+          title: item.title,
+          hashtags: feed.hashtags
+        });
       }, index * process.env.BOT_INTERVAL_SEND_POSTS);
     }
   });
 }
 
-function isUTCMidNight() {
-  const utcHours = time.getUTCHours() === 00;
-  const utcMinutes = time.getUTCMinutes() === 00;
-  const utcSeconds = time.getUTCSeconds() <= 58;
-
-  return (utcHours && utcMinutes && utcSeconds) ? true : false;
+function defaultPostTemplate(bot, { chatId, feedTitle, link, title, hashtags }) {
+  bot.telegram.sendMessage(chatId, 
+    `<strong>Novo post ✅</strong>
+    \n\n<code>${title}</code>
+    \n\n<a href='${link}'>Ler post completo ➡️</a>
+    \n\nDe: <i>${feedTitle}</i>\n\n${hashtags}`, 
+    { parse_mode: 'HTML'});
 }
 
 async function start(bot) {
   const data = await getChatsData();
 
-  if (isUTCMidNight()) await postRepository.dropAllPosts();
+  await postServices.dropAllPosts();
+
   if (data.length === 0) return data;
   
-  data.forEach(async feed => {
-    const { count } = await postRepository.getPostsCount({ chat_id: feed.chat_id});
-
-    feed.data.splice(0, count);
-    const items = feed.data.slice(0, process.env.BOT_COUNT_POSTS);
-
-    sendMessages({ feed, data: items, bot });
+  data.forEach(feed => {
+    sendFeedPosts({ feed, data: feed.data, bot });
   });
 }
 
-async function main(bot) {
-  await start(bot);
-  setInterval(async () => await start(bot), process.env.BOT_INTERVAL_GET_POSTS);
+class Core {
+  constructor({ bot }) {
+    this._bot = bot;
+  }
+
+  async init() {
+    await start(this._bot);
+    setInterval(async () => await start(this._bot), process.env.BOT_INTERVAL_GET_POSTS);
+  }
 }
 
-module.exports = main;
+module.exports = Core;
