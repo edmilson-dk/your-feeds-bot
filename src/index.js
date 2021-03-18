@@ -11,8 +11,13 @@ const bot = new Bot({
   createBot: createBot,
 }).init();
 
-new Core({ bot }).init();
-new Commands({ bot }).init();
+const core = new Core({ bot }).init();
+const commands = new Commands({ bot })
+
+(async => {
+  commands.init();
+  await core.init();
+})();
 
 bot.launch();
 process.once('SIGINT', () => bot.stop('SIGINT'));
