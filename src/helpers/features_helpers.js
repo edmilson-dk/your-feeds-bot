@@ -1,7 +1,7 @@
 async function asyncFilter(array, cb) {
   const results = await Promise.all(array.map(cb));
 
-  return array.filter((_, index) => results[index]);
+  return array.filter(index => results[index]);
 }
 
 function isHashtagsValid(hashtags) {
@@ -28,10 +28,9 @@ function removeNotHashtagsInArray(array) {
   return newArray;
 }
 
-async function listFeeds(feedRepository, chatID) {
-  const feeds = await feedRepository.getFeeds(chatID);
-  
+async function listFeeds(feeds) { 
   let feedsList = '<strong>Feeds 📌</strong>\n';
+
   if (feeds && feeds.length > 0) {
     feeds.forEach(feed => {
       feedsList += `\n🔹 <code>${feed.title}</code>\n`
@@ -41,10 +40,9 @@ async function listFeeds(feedRepository, chatID) {
   return feedsList;
 }
 
-async function listChats(chatRepository, userID) {
-  const chats = await chatRepository.getAllChatOfUser(String(userID));
-  
+async function listChats(chats) {
   let chatsList = '<strong>Chats 📌</strong>\n';
+
   if (chats && chats.length > 0) {
     chats.forEach(chat => {
       chatsList += `\n🔸 <code>${chat.title}</code>\n`;
@@ -57,7 +55,7 @@ async function listChats(chatRepository, userID) {
 function formatToString(fields) {
   if (typeof fields !== 'object') return;
 
-  fields.map(item => {
+  return fields.map(item => {
     if (typeof item !== 'string') return String(item);
     return item;
   })
