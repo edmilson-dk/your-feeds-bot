@@ -12,7 +12,7 @@ const bot = new Bot({
 }).init();
 
 const core = new Core({ bot }).init();
-const commands = new Commands({ bot })
+const commands = new Commands({ bot });
 
 (async () => {
   commands.init();
