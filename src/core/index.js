@@ -67,15 +67,16 @@ function sendFeedPosts({ feed, data, bot }) {
 function defaultPostTemplate(bot, { chatId, feedTitle, link, title, hashtags }) {
   bot.telegram.sendMessage(chatId, 
     `<strong>Novo post ✅</strong>
-    \n\n<code>${title}</code>
-    \n\n<a href='${link}'>Ler post completo ➡️</a>
-    \n\nDe: <i>${feedTitle}</i>\n\n${hashtags}`, 
+    \n<code>${title}</code>
+    \n<a href='${link}'>Ler post completo ➡️</a>
+    \nDe: <i>${feedTitle}</i>\n\n${hashtags}`, 
     { parse_mode: 'HTML'});
 }
 
 async function start(bot) {
   const data = await getChatsData();
 
+  /* delete posts in database after 1 day of created */
   await postServices.dropAllPosts();
 
   if (data.length === 0) return data;
