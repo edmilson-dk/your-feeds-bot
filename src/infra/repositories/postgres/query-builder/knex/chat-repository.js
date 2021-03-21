@@ -51,8 +51,7 @@ class ChatRepository extends ChatRepositoryInterface {
       .where({ id: chatId, user_id: userId })
       .del();
 
-  return;
-  
+    return;
   }
 
   async getAllChatsId() {
