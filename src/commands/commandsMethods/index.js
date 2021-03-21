@@ -2,7 +2,7 @@ const {
   start_service, home, cmd_error, 
   not_member_admin, view_chat, 
   add_feed, remove_feed, active_feed,
-  command_error, not_found_chat
+  command_error, not_found_chat, remove_chat
 } = require('../../messages/commands');
 const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../../markups');
 const { start_bot_keyboard, go_back_btn } = require('../../messages/inline_keyboard');
@@ -40,10 +40,9 @@ async function finishedViewChatCmd(ctx, chatId ) {
   ];
 }
 
-
 async function finishedManagerChatCmd(ctx, userId ) {
   const allChats = await chatServices.getAllChatsOfUser({ userId });
-  console.log(allChats)
+  
   const chatsList = await listChats(allChats);
 
   return [
@@ -238,7 +237,6 @@ async function removeFeedCommand(ctx) {
   }
 
   const feedTitle = removeCommand(ctx.message.text, '/remove');
-
   const chatId = await chatServices.getIsActiveConfigChat({ userId });
 
   if (!feedTitle) {
@@ -291,6 +289,7 @@ async function removeChatCommand(ctx) {
     ctx.reply(command_error.message);
     return;
   }
+  
   const chatTitle = removeCommand(ctx.message.text, '/remove_chat');
   
   if (!chatTitle) {
@@ -301,7 +300,7 @@ async function removeChatCommand(ctx) {
   const row = await chatServices.getUserChatByTitle({ userId, chatTitle });
   
   if (!row) {
-    ctx.reply('⚠️ Chat não encontrado, certifique-se de ter escrito o nome do chat conforme a listagem acima.');
+    ctx.reply(remove_chat.not_found);
     return;
   }
 
@@ -310,7 +309,7 @@ async function removeChatCommand(ctx) {
   await chatServices.dropChat({ userId, chatId: id });
 
   setTimeout(async () => {
-    ctx.reply(`✅ O chat (${title})foi removido com sucesso.`);
+    ctx.reply(`${remove_chat.sucess} ${title}`);
     const message = await finishedManagerChatCmd(ctx, userId);
     ctx.telegram.sendMessage(...message);
   }, 500);
