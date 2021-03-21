@@ -37,6 +37,10 @@
   "command_error": {
     "message": "⚠️ Por favor envie o comando /start e tente novamente."
   },
+  "remove_chat": {
+    "not_found": "⚠️ Chat não encontrado, certifique-se de ter escrito o nome do chat conforme a listagem acima.",
+    "sucess": "✅ Chat removido com sucesso: "
+  },
   "not_found_chat": {
     "message": "⚠️ Este chat não existe em sua lista, digite o titúlo conforme está escrito na listagem acima."
   }
