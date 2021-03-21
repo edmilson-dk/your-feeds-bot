@@ -1,22 +1,19 @@
 {
-  "start_bot": {
-    "text": "⚠️ Importante para utilizar nossos serviços de feed, precisos que você informe qual é seu fuso horário de sua região em relação ao fuso horário universal UTC 🕝 para os feeds serem postados no horário correto, de onde você vive.\n\nPara isso, basta enviar o comando /register, com o fuso horário logo após o comando, exemplo:\n\n/register +3"
-  },
   "home": {
     "text": "Nosso sistema funciona através de serviços de feed RSS, se você não souber como funciona, fique ciente do que se trata <a href='https://rockcontent.com/br/blog/o-que-e-feed-rss/'>aqui ➡️</a>.\n\n<strong>Escolha uma opção abaixo ✅</strong>"
   }, 
   "cmd_error": {
-    "text": "Por favor, digite o comando corretamente⚠️"
+    "text": "⚠️ Por favor digite o comando corretamente."
   },
   "start_service": {
-    "invalid_user": "Usuário inválido ❌",
-    "chat_alredy_exists": "Este chat já está registrado em meu sistema ⚠️",
-    "not_bot_admin": "Preciso ter poderes administrativos, para executar este comando ⚠️",
-    "not_admin": "Você precisa ser admistrador do grupo, para executar este comando ⚠️",
+    "invalid_user": "❌ Usuário inválido.",
+    "chat_alredy_exists": "⚠️ Este chat já está registrado em meu sistema.",
+    "not_bot_admin": "⚠️ Preciso ter poderes administrativos, para executar este comando.",
+    "not_admin": "⚠️ Você precisa ser admistrador do grupo, para executar este comando.",
     "success": "Pronto bot conectado ✅\n\nVolte ao meu menu, para configurar os feeds para este grupo."
   },
   "not_member_admin": {
-    "text": "Você não é mais administrador ou membro deste chat ❌"
+    "text": "❌ Você não é mais administrador ou membro deste chat."
   },
   "view_chat": {
     "text": "<strong>Gerencie os feeds deste chat ⚙️</strong>\n\n<i>✅ Assim que você adicionar os feeds desejados a este chat, envie o comando /active para iniciar as postagens em seu chat automaticamente.</i>\n\n<strong>Comandos para gerencias os feeds 📌</strong>\n\n/add <i>rss_url #hashtags</i>\n\n<code>⬆️ Use este comando para cadastrar um novo feed a seu chat, envie a url do serviço desejado de RSS e no máximo 3 hashtags para identificar as postagens em seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>⬆️ Use este comando para remover um feed de seu chat.</code>\n\n/active\n\n<code>⬆️ Use este comando para informar ao bot que seu grupo já poderá receber postagens.</code>"

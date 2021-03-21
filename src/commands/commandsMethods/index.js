@@ -5,9 +5,12 @@ const {
   command_error, not_found_chat
 } = require('../../messages/commands');
 const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../../markups');
+const { start_bot_keyboard, go_back_btn } = require('../../messages/inline_keyboard');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../../helpers/bot_helpers');
-const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds } = require('../../helpers/features_helpers');
+const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds, listChats } = require('../../helpers/features_helpers');
 
+
+const { manager_feeds } = start_bot_keyboard;
 const RssParser = require('../../drivers/rss-parser');
 
 const userServices = require('../../infra/adapters/user-adapter');
@@ -16,12 +19,12 @@ const feedServices = require('../../infra/adapters/feed-adapter');
 
 const rssParser = new RssParser();
 
-async function isValidSessionToSendCommand(userId) {
+async function isValidSessionToSendCommand(userId, userValidate = false) {
   const existsUser = await userServices.existsUser({ userId });
   const existsChat = await chatServices.containsActiveChatConfig({ userId });
 
   if (!existsUser) return false;
-  if (!existsChat) return false;
+  if (!existsChat && !userValidate) return false;
 
   return true;
 }
@@ -34,6 +37,25 @@ async function finishedViewChatCmd(ctx, chatId ) {
     getChatId(ctx), 
     `${view_chat.text}\n\n${feedsList}`, 
     goBackManagerFeedsMarkup
+  ];
+}
+
+
+async function finishedManagerChatCmd(ctx, userId ) {
+  const allChats = await chatServices.getAllChatsOfUser({ userId });
+  console.log(allChats)
+  const chatsList = await listChats(allChats);
+
+  return [
+    getChatId(ctx), 
+    `${manager_feeds.action_text}\n\n${chatsList}`, {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: go_back_btn.text, callback_data: 'start_bot' }]
+        ]
+      },
+      parse_mode: 'HTML'
+    }
   ];
 }
 
@@ -262,6 +284,38 @@ async function activeChatCommand(ctx) {
   return;
 }
 
+async function removeChatCommand(ctx) {
+  const userId = ctx.message.from.id;
+
+  if (!(await isValidSessionToSendCommand(userId, true))) {
+    ctx.reply(command_error.message);
+    return;
+  }
+  const chatTitle = removeCommand(ctx.message.text, '/remove_chat');
+  
+  if (!chatTitle) {
+    ctx.reply(cmd_error.text);
+    return;
+  }
+
+  const row = await chatServices.getUserChatByTitle({ userId, chatTitle });
+  
+  if (!row) {
+    ctx.reply('⚠️ Chat não encontrado, certifique-se de ter escrito o nome do chat conforme a listagem acima.');
+    return;
+  }
+
+  const { id, title } = row;
+
+  await chatServices.dropChat({ userId, chatId: id });
+
+  setTimeout(async () => {
+    ctx.reply(`✅ O chat (${title})foi removido com sucesso.`);
+    const message = await finishedManagerChatCmd(ctx, userId);
+    ctx.telegram.sendMessage(...message);
+  }, 500);
+}
+
 module.exports = {
   startBotCommand,
   startServiceCommand,
@@ -270,4 +324,5 @@ module.exports = {
   addFeedCommand,
   removeFeedCommand,
   activeChatCommand,
+  removeChatCommand,
 }
