@@ -29,7 +29,7 @@ class ChatRepository extends ChatRepositoryInterface {
     const row = await knex('chats')
       .where({ title: chatTitle, user_id: userId })
 
-    return row[0];
+    return row.length > 0 ? row[0] : [];
   }
 
   async existsChat({ chatId }) {
