@@ -4,11 +4,12 @@ const { getChatId, getUserCallbackId } = require('../helpers/bot_helpers');
 const feedStyleServices = require('../infra/adapters/feed-style-adapter');
 const chatServices = require('../infra/adapters/chat-adapter');
 const { stylesFeedIdentifier } = require('../constants');
+const { getTagType } = require('../helpers/features_helpers');
 
 module.exports = ({ bot }) => {
+  
   async function setFeedStyle(ctx, data) {
     const userId = getUserCallbackId(ctx);
-   
     const chatId = await chatServices.getIsActiveConfigChat({ userId });
 
     if (!(await feedStyleServices.existsFeedStyles({ chatId }))) {
@@ -22,25 +23,38 @@ module.exports = ({ bot }) => {
       setStylesTitleFeedsMarkup);
   }
 
-  bot.action('style_title', ctx => {
+  bot.action('style_title', async ctx => {
     ctx.answerCbQuery();
     ctx.deleteMessage();
 
-    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para os titúlos abaixo 📌', setStylesTitleFeedsMarkup);
+    const userId = getUserCallbackId(ctx);  
+    const chatId = await chatServices.getIsActiveConfigChat({ userId });
+    const { title_tag } = await feedStyleServices.getStyles({ chatId });
+
+    ctx.telegram.sendMessage(getChatId(ctx), 
+    `Escolha um estilo para os titúlos abaixo 📌
+    \nEstilo da fonte atual é: ${getTagType(title_tag)} ✅`, 
+    setStylesTitleFeedsMarkup);
   })
 
   bot.action('style_description', ctx => {
     ctx.answerCbQuery();
     ctx.deleteMessage();
 
-    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para as descrições abaixo 📌', setStylesDescriptionFeedsMarkup);
+    ctx.telegram.sendMessage(getChatId(ctx), 
+    `Escolha um estilo para as descrições abaixo 📌
+    \nEstilo da fonte atual é: ${getTagType(title_tag)} ✅`, 
+    setStylesDescriptionFeedsMarkup);
   })
 
   bot.action('style_content', ctx => {
     ctx.answerCbQuery();
     ctx.deleteMessage();
 
-    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para os conteúdos abaixo 📌', setStylesContentFeedsMarkup);
+    ctx.telegram.sendMessage(getChatId(ctx), 
+    `Escolha um estilo para os conteúdos abaixo 📌
+    \nEstilo da fonte atual é: ${getTagType(title_tag)} ✅`,
+     setStylesContentFeedsMarkup);
   });
 
   bot.action('title_italic', async ctx => {
