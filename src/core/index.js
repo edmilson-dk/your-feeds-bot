@@ -68,12 +68,12 @@ function sendFeedPosts({ feed, data, bot }) {
 async function defaultPostTemplate(bot, { chatId, feedTitle, link, title, hashtags }) {
   const { title_tag } = await feedStyleServices.getStyles({ chatId });
 
-  function valid(tag, value) {
+  function validHtmlTag(tag, value) {
     const isValid = tag !== '' ? true : false;
     return isValid ? `<${tag}>${value}</${tag}>` : value;
   }
 
-  const formattedTitle = valid(title_tag, title);
+  const formattedTitle = validHtmlTag(title_tag, title);
 
   bot.telegram.sendMessage(chatId, 
     `<strong>Novo post ✅</strong>
