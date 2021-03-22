@@ -1,10 +1,8 @@
 const { 
-  start_service, home, cmd_error, 
-  not_member_admin, view_chat, 
-  add_feed, remove_feed, active_feed,
-  command_error, not_found_chat, remove_chat
+  start_service, home, cmd_error, not_member_admin, view_chat, 
+  add_feed, remove_feed, active_feed, command_error, not_found_chat, remove_chat, set_styles
 } = require('../../messages/commands');
-const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup } = require('../../markups');
+const { homeMarkup, isNotMemberOrAdminMarkup, goBackManagerFeedsMarkup, setStylesFeedsMarkup } = require('../../markups');
 const { start_bot_keyboard, go_back_btn } = require('../../messages/inline_keyboard');
 const { getChatId, isBotAdmin, isAdmin, isStillMemberAndAdmin, removeCommand } = require('../../helpers/bot_helpers');
 const { asyncFilter, isHashtagsValid, removeSpacesInArray, removeNotHashtagsInArray, listFeeds, listChats } = require('../../helpers/features_helpers');
@@ -174,8 +172,10 @@ async function viewChatCommand(ctx, bot) {
     return;
   } else {
     ctx.telegram.sendMessage(userId, not_member_admin.text, isNotMemberOrAdminMarkup);
-    await chatServices.dropChat({ userId, chatId });
+    ctx.telegram.leaveChat(chatId);
 
+    await chatServices.dropChat({ userId, chatId });
+  
     return;
   }
 }
@@ -315,6 +315,18 @@ async function removeChatCommand(ctx) {
   }, 500);
 }
 
+async function setStylesFeedCommand(ctx) {
+  const userId = ctx.message.from.id;
+
+  if (!(await isValidSessionToSendCommand(userId))) {
+    ctx.reply(command_error.message);
+    return;
+  }
+
+  ctx.telegram.sendMessage(getChatId(ctx), set_styles.message, setStylesFeedsMarkup);
+  return;
+}
+
 module.exports = {
   startBotCommand,
   startServiceCommand,
@@ -324,4 +336,5 @@ module.exports = {
   removeFeedCommand,
   activeChatCommand,
   removeChatCommand,
+  setStylesFeedCommand,
 }
