@@ -1,4 +1,4 @@
-const setupFeedActions = require('../actions/setup_feed_actions');
+const setupFeedActions = require('../actions');
 const { 
   startBotCommand,
   startServiceCommand,
