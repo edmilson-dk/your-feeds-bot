@@ -70,6 +70,19 @@ function getFeedStyleTagData(data) {
   return { [newKey]: value };
 }
 
+function getTagType(tagName) {
+  switch (tagName) {
+    case 'i':
+      return 'Itálico';
+    case 'code':
+      return 'Monospace';
+    case 'strong':
+      return 'Negrito';
+    default: 
+      return 'Desconhecido';
+  }
+}
+
 module.exports = {
   asyncFilter,
   isHashtagsValid,
@@ -79,4 +92,5 @@ module.exports = {
   listChats,
   formatToString,
   getFeedStyleTagData,
+  getTagType
 }
