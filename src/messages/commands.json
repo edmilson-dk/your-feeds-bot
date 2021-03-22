@@ -16,7 +16,7 @@
     "text": "❌ Você não é mais administrador ou membro deste chat."
   },
   "view_chat": {
-    "text": "<strong>Gerencie os feeds deste chat ⚙️</strong>\n\n<i>✅ Assim que você adicionar os feeds desejados a este chat, envie o comando /active para iniciar as postagens em seu chat automaticamente.</i>\n\n<strong>Comandos para gerencias os feeds 📌</strong>\n\n/add <i>rss_url #hashtags</i>\n\n<code>⬆️ Use este comando para cadastrar um novo feed a seu chat, envie a url do serviço desejado de RSS e no máximo 3 hashtags para identificar as postagens em seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>⬆️ Use este comando para remover um feed de seu chat.</code>\n\n/active\n\n<code>⬆️ Use este comando para informar ao bot que seu grupo já poderá receber postagens.</code>"
+    "text": "<strong>Gerencie os feeds deste chat ⚙️</strong>\n\n<i>✅ Assim que você adicionar os feeds desejados a este chat, envie o comando /active para iniciar as postagens em seu chat automaticamente.</i>\n\n<strong>Comandos para gerencias os feeds 📌</strong>\n\n/add <i>rss_url #hashtags</i>\n\n<code>⬆️ Use este comando para cadastrar um novo feed a seu chat, envie a url do serviço desejado de RSS e no máximo 3 hashtags para identificar as postagens em seu chat.</code>\n\n/remove <i>titúlo</i>\n\n<code>⬆️ Use este comando para remover um feed de seu chat.</code>\n\n/active\n\n<code>⬆️ Use este comando para informar ao bot que seu grupo já poderá receber postagens.</code>\n\n/styles\n\n<code>⬆️ Envie este comando para configurar os estilos dos feeds, como o estilo do titúlo, descrição, conteúdo, etc.</code>"
   },
   "add_feed": {
     "cmd_error": "<strong>❌ Comando inválido.</strong>\n\nO comando /add deve possuir a seguinte estrutura:\n\n/add <i>rss_url #hashtags</i>.",
@@ -35,11 +35,14 @@
     "success": "✅ Em alguns minutos seu chat já começarar a receber postagens"
   },
   "command_error": {
-    "message": "⚠️ Por favor envie o comando /start e tente novamente."
+    "message": "⚠️ Você não tem nenhum chat ativo no modo de configuração, envie o comando /start e tente novamente."
   },
   "remove_chat": {
     "not_found": "⚠️ Chat não encontrado, certifique-se de ter escrito o nome do chat conforme a listagem acima.",
     "sucess": "✅ Chat removido com sucesso: "
+  },
+  "set_styles": {
+    "message": "<b>Abaixo você pode escolher os estilos dos feeds que este chat vai receber 📌</b>"
   },
   "not_found_chat": {
     "message": "⚠️ Este chat não existe em sua lista, digite o titúlo conforme está escrito na listagem acima."
