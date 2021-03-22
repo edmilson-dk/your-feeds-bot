@@ -1,0 +1,169 @@
+const { setStylesContentFeedsMarkup, setStylesDescriptionFeedsMarkup, setStylesTitleFeedsMarkup } = require('../markups');
+const { getChatId, getUserCallbackId } = require('../helpers/bot_helpers');
+
+const feedStyleServices = require('../infra/adapters/feed-style-adapter');
+const chatServices = require('../infra/adapters/chat-adapter');
+const { stylesFeedIdentifier } = require('../constants');
+
+module.exports = ({ bot }) => {
+  async function setFeedStyle(ctx, data) {
+    const userId = getUserCallbackId(ctx);
+   
+    const chatId = await chatServices.getIsActiveConfigChat({ userId });
+
+    if (!(await feedStyleServices.existsFeedStyles({ chatId }))) {
+      await feedStyleServices.addStyles(data, chatId);
+    } else {
+      await feedStyleServices.updateStyles(data, chatId);
+    }
+
+    ctx.telegram.sendMessage(getChatId(ctx), 
+      '✅ Novo estilo do feed adicionado com sucesso!', 
+      setStylesTitleFeedsMarkup);
+  }
+
+  bot.action('style_title', ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para os titúlos abaixo 📌', setStylesTitleFeedsMarkup);
+  })
+
+  bot.action('style_description', ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para as descrições abaixo 📌', setStylesDescriptionFeedsMarkup);
+  })
+
+  bot.action('style_content', ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para os conteúdos abaixo 📌', setStylesContentFeedsMarkup);
+  });
+
+  bot.action('title_italic', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    const { tag } = stylesFeedIdentifier.italic;
+    await setFeedStyle(ctx, { titleTag: tag });
+
+    return;
+  })
+
+  bot.action('title_bold', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    const { tag } = stylesFeedIdentifier.bold;
+    await setFeedStyle(ctx, { titleTag: tag });
+
+    return;
+  })
+  
+  bot.action('title_mono', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+    
+    const { tag } = stylesFeedIdentifier.monospace;
+    await setFeedStyle(ctx, { titleTag: tag });
+
+    return;
+  })
+
+  bot.action('title_default', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+    
+    const { tag } = stylesFeedIdentifier.default;
+    await setFeedStyle(ctx, { titleTag: tag });
+
+    return;
+  })
+
+  // description 
+
+  bot.action('description_italic', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    const { tag } = stylesFeedIdentifier.italic;
+    await setFeedStyle(ctx, { descriptionTag: tag });
+
+    return;
+  })
+
+  bot.action('description_bold', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    const { tag } = stylesFeedIdentifier.bold;
+    await setFeedStyle(ctx, { descriptionTag: tag });
+
+    return;
+  })
+  
+  bot.action('description_mono', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+    
+    const { tag } = stylesFeedIdentifier.monospace;
+    await setFeedStyle(ctx, { descriptionTag: tag });
+
+    return;
+  })
+
+  bot.action('description_default', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+    
+    const { tag } = stylesFeedIdentifier.default;
+    await setFeedStyle(ctx, { descriptionTag: tag });
+
+    return;
+  })
+
+   // content
+
+   bot.action('content_italic', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    const { tag } = stylesFeedIdentifier.italic;
+    await setFeedStyle(ctx, { contentTag: tag });
+
+    return;
+  })
+
+  bot.action('content_bold', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    const { tag } = stylesFeedIdentifier.bold;
+    await setFeedStyle(ctx, { contentTag: tag });
+
+    return;
+  })
+  
+  bot.action('content_mono', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+    
+    const { tag } = stylesFeedIdentifier.monospace;
+    await setFeedStyle(ctx, { contentTag: tag });
+
+    return;
+  })
+
+  bot.action('content_default', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+    
+    const { tag } = stylesFeedIdentifier.default;
+    await setFeedStyle(ctx, { contentTag: tag });
+
+    return;
+  })
+}
