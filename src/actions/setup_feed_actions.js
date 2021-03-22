@@ -1,7 +1,7 @@
 const { home } = require('../messages/commands');
 const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard');
 const { getChatId, getUserId } = require('../helpers/bot_helpers');
-const { homeMarkup } = require('../markups');
+const { homeMarkup, setStylesContentFeedsMarkup, setStylesDescriptionFeedsMarkup, setStylesTitleFeedsMarkup } = require('../markups');
 const { listChats } = require('../helpers/features_helpers');
 
 const chatServices = require('../infra/adapters/chat-adapter');
@@ -73,5 +73,26 @@ module.exports = ({ bot }) => {
         ]
       }
     });
+  })
+
+  bot.action('style_title', ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para os titúlos abaixo 📌', setStylesTitleFeedsMarkup);
+  })
+
+  bot.action('style_description', ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para as descrições abaixo 📌', setStylesDescriptionFeedsMarkup);
+  })
+
+  bot.action('style_content', ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    ctx.telegram.sendMessage(getChatId(ctx), 'Escolha um estilo para os conteúdos abaixo 📌', setStylesContentFeedsMarkup);
   })
 }
