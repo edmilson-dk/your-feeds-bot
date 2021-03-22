@@ -68,5 +68,5 @@ module.exports = {
   removeNotHashtagsInArray,
   listFeeds,
   listChats,
-  formatToString
+  formatToString,
 }
