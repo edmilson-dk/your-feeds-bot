@@ -8,6 +8,7 @@ const {
   activeChatCommand,
   startServiceEvent,
   removeChatCommand,
+  setStylesFeedCommand,
 } = require('./commandsMethods');
 
 class Commands {
@@ -25,6 +26,7 @@ class Commands {
     this._bot.command('remove', async ctxRemoveCmd => await removeFeedCommand(ctxRemoveCmd));
     this._bot.command('active', async ctxActiveCmd => await activeChatCommand(ctxActiveCmd));
     this._bot.command('remove_chat', async ctxRemoveChatCmd => await removeChatCommand(ctxRemoveChatCmd));
+    this._bot.command('styles', async ctxSetStylesCmd => await setStylesFeedCommand(ctxSetStylesCmd));
 
     setupFeedActions({ bot: this._bot });
   }
