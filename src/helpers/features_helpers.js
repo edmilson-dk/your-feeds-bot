@@ -61,6 +61,15 @@ function formatToString(fields) {
   })
 }
 
+function getFeedStyleTagData(data) {
+  const key = Object.keys(data)[0];
+  const value = Object.values(data)[0];
+
+  const newKey = key.split('Tag').join('_tag');
+
+  return { [newKey]: value };
+}
+
 module.exports = {
   asyncFilter,
   isHashtagsValid,
@@ -69,4 +78,5 @@ module.exports = {
   listFeeds,
   listChats,
   formatToString,
+  getFeedStyleTagData,
 }

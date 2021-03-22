@@ -8,6 +8,7 @@ const feedServices = require("../infra/adapters/feed-adapter");
 const { manager_feeds } = start_bot_keyboard;
 
 const getChatId = (ctx) => ctx.chat.id;
+const getUserCallbackId = (ctx) => ctx.update.callback_query.from.id;
 
 async function isAdmin(memberId, ctx) {
   const { status } = await ctx.getChatMember(memberId);
@@ -85,5 +86,6 @@ module.exports = {
   isStillMemberAndAdmin,
   removeCommand,
   finishedViewChatCmd,
-  finishedManagerChatCmd
+  finishedManagerChatCmd,
+  getUserCallbackId
 };
