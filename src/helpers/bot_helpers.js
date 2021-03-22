@@ -1,3 +1,12 @@
+const { goBackManagerFeedsMarkup,} = require('../markups');
+const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard.json');
+const { view_chat } = require('../messages/commands.json');
+const { listFeeds, listChats } = require('./features_helpers');
+const chatServices = require("../infra/adapters/chat-adapter");
+const feedServices = require("../infra/adapters/feed-adapter");
+
+const { manager_feeds } = start_bot_keyboard;
+
 const getChatId = (ctx) => ctx.chat.id;
 
 async function isAdmin(memberId, ctx) {
@@ -39,11 +48,42 @@ function removeCommand(message, command) {
   return newMessage;
 }
 
+async function finishedViewChatCmd(ctx, chatId ) {
+  const allFeeds = await feedServices.getFeeds({ chatId });
+  const feedsList = await listFeeds(allFeeds);
+
+  return [
+    getChatId(ctx), 
+    `${view_chat.text}\n\n${feedsList}`, 
+    goBackManagerFeedsMarkup
+  ];
+}
+
+async function finishedManagerChatCmd(ctx, userId ) {
+  const allChats = await chatServices.getAllChatsOfUser({ userId });
+  
+  const chatsList = await listChats(allChats);
+
+  return [
+    getChatId(ctx), 
+    `${manager_feeds.action_text}\n\n${chatsList}`, {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: go_back_btn.text, callback_data: 'start_bot' }]
+        ]
+      },
+      parse_mode: 'HTML'
+    }
+  ];
+}
+
 module.exports = {
   isAdmin,
   isBotAdmin,
   getChatId,
   getUserId,
   isStillMemberAndAdmin,
-  removeCommand
+  removeCommand,
+  finishedViewChatCmd,
+  finishedManagerChatCmd
 };
