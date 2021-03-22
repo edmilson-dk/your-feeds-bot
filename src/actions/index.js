@@ -1,17 +1,21 @@
 const { home } = require('../messages/commands');
 const { start_bot_keyboard, go_back_btn } = require('../messages/inline_keyboard');
-const { getChatId, getUserId } = require('../helpers/bot_helpers');
+const { getChatId, getUserId, finishedViewChatCmd, getUserCallbackId } = require('../helpers/bot_helpers');
 const { homeMarkup } = require('../markups');
 const { listChats } = require('../helpers/features_helpers');
 
 const chatServices = require('../infra/adapters/chat-adapter');
+const setFeedsStylesActions = require('./set-feed-styles-actions');
 
 const { manager_feeds, add_super_chat, about, help } = start_bot_keyboard;
 
 module.exports = ({ bot }) => {
+  setFeedsStylesActions({ bot });
+
   bot.action('start_bot', ctx => {
     ctx.answerCbQuery();
     ctx.deleteMessage();
+
     ctx.telegram.sendMessage(getChatId(ctx), home.text, homeMarkup);
   }) 
 
@@ -74,4 +78,17 @@ module.exports = ({ bot }) => {
       }
     });
   })
+
+  bot.action('view_chat', async ctx => {
+    ctx.answerCbQuery();
+    ctx.deleteMessage();
+
+    const userId = getUserCallbackId(ctx);
+    const chatId = await chatServices.getIsActiveConfigChat({ userId });
+
+    const message = await finishedViewChatCmd(ctx, chatId);
+    ctx.telegram.sendMessage(...message);
+  })
+
+  
 }

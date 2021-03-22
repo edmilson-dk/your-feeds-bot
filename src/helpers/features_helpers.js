@@ -61,6 +61,28 @@ function formatToString(fields) {
   })
 }
 
+function getFeedStyleTagData(data) {
+  const key = Object.keys(data)[0];
+  const value = Object.values(data)[0];
+
+  const newKey = key.split('Tag').join('_tag');
+
+  return { [newKey]: value };
+}
+
+function getTagType(tagName) {
+  switch (tagName) {
+    case 'i':
+      return 'Itálico';
+    case 'code':
+      return 'Monospace';
+    case 'strong':
+      return 'Negrito';
+    default: 
+      return 'Desconhecido';
+  }
+}
+
 module.exports = {
   asyncFilter,
   isHashtagsValid,
@@ -68,5 +90,7 @@ module.exports = {
   removeNotHashtagsInArray,
   listFeeds,
   listChats,
-  formatToString
+  formatToString,
+  getFeedStyleTagData,
+  getTagType
 }
