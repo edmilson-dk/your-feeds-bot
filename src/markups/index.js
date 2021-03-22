@@ -39,9 +39,59 @@ const goBackManagerFeedsMarkup = {
   parse_mode: 'HTML'
 }
 
+const setStylesFeedsMarkup = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Titúlo', callback_data: 'style_title' }],
+      [{ text: 'Descrição', callback_data: 'style_description' }],
+      [{ text: 'Conteúdo', callback_data: 'style_content' }],
+      [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
+    ]
+  },
+  parse_mode: 'HTML'
+}
+
+const setStylesTitleFeedsMarkup = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Itálico 🔴', callback_data: 'title_italic'}, { text: 'Negrito 🔴', callback_data: 'title_bold'}],
+      [{ text: 'Monospace 🔴', callback_data: 'title_mono'}, { text: 'Normal 🔴', callback_data: 'title_normal'}],
+      [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
+    ]
+  },
+  parse_mode: 'HTML'
+}
+
+const setStylesDescriptionFeedsMarkup = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Itálico 🔴', callback_data: 'description_italic'}, { text: 'Negrito 🔴', callback_data: 'description_bold'}],
+      [{ text: 'Monospace 🔴', callback_data: 'description_mono'}, { text: 'Normal 🔴', callback_data: 'description_normal'}],
+      [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
+    ]
+  },
+  parse_mode: 'HTML'
+}
+
+const setStylesContentFeedsMarkup = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Itálico 🔴', callback_data: 'content_italic'}, { text: 'Negrito 🔴', callback_data: 'content_bold'}],
+      [{ text: 'Monospace 🔴', callback_data: 'content_mono'}, { text: 'Normal 🔴', callback_data: 'content_normal'}],
+      [{ text: go_back_btn.text, callback_data: 'manager_feeds' }],
+    ]
+  },
+  parse_mode: 'HTML'
+}
+
+
 module.exports = {
   homeMarkup,
   timezonesMarkup,
   isNotMemberOrAdminMarkup,
   goBackManagerFeedsMarkup,
+  setStylesFeedsMarkup,
+  setStylesTitleFeedsMarkup,
+  setStylesContentFeedsMarkup,
+  setStylesDescriptionFeedsMarkup,
 }
