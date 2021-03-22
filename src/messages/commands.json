@@ -42,7 +42,7 @@
     "sucess": "✅ Chat removido com sucesso: "
   },
   "set_styles": {
-    "message": "<b>Abaixo você pode escolher os estilos dos feeds que este chat vai receber 📌</b>"
+    "message": "<b>Abaixo você pode escolher os estilos dos feeds que este chat vai receber 📌</b>\n\n⚠️ Por enquanto so temos suporte a estilização dos titúlos dos feeds, por que a estrutura atual dos feeds só contém o titúlo do post e o link referente ao post."
   },
   "not_found_chat": {
     "message": "⚠️ Este chat não existe em sua lista, digite o titúlo conforme está escrito na listagem acima."
