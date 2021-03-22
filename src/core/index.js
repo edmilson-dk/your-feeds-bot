@@ -2,6 +2,7 @@ const RssParser = require('../drivers/rss-parser');
 
 const chatServices = require('../infra/adapters/chat-adapter');
 const feedServices = require('../infra/adapters/feed-adapter');
+const feedStyleServices = require('../infra/adapters/feed-style-adapter');
 const postServices = require('../infra/adapters/post-adapter');
 
 const rssParser = new RssParser();
@@ -64,10 +65,19 @@ function sendFeedPosts({ feed, data, bot }) {
   });
 }
 
-function defaultPostTemplate(bot, { chatId, feedTitle, link, title, hashtags }) {
+async function defaultPostTemplate(bot, { chatId, feedTitle, link, title, hashtags }) {
+  const { title_tag } = await feedStyleServices.getStyles({ chatId });
+
+  function valid(tag, value) {
+    const isValid = tag !== '' ? true : false;
+    return isValid ? `<${tag}>${value}</${tag}>` : value;
+  }
+
+  const formattedTitle = valid(title_tag, title);
+
   bot.telegram.sendMessage(chatId, 
     `<strong>Novo post ✅</strong>
-    \n<code>${title}</code>
+    \n${formattedTitle}
     \n<a href='${link}'>Ler post completo ➡️</a>
     \nDe: <i>${feedTitle}</i>\n\n${hashtags}`, 
     { parse_mode: 'HTML'});
